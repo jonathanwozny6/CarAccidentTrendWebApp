@@ -4,10 +4,20 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+import { BrowserRouter as Router, Route, Link, Routes} 
+        from "react-router-dom";
+
+import Query1Page from './Pages/Query1';
+import LoginPage from './Pages/Login'
+
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
+    {/* <Routes> */}
+      {/* <Route exact='/' element={LoginPage}/> */}
     <App />
+    {/* </Routes> */}
   </React.StrictMode>
 );
 
