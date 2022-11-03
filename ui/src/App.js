@@ -10,7 +10,6 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Link, Routes} 
         from "react-router-dom";
 
-import logo from './logo.svg';
 import './App.css';
 
 // pages
@@ -27,8 +26,8 @@ function App() {
   return (
     <div className="App">
       <Router>
-      <div className="list">
-              <button><Link to="/">Home</Link></button>
+        <div className="list">
+              <button><Link to="/Home">Home</Link></button>
               <button><Link to="query1">Query1</Link></button>
               <button><Link to="query2">Query2</Link></button>
               <button><Link to="query3">Query3</Link></button>
@@ -36,7 +35,8 @@ function App() {
               <button><Link to="query5">Query5</Link></button>
         </div>
         <Routes>
-          <Route exact path='/' element={<HomePage />  }></Route>
+          <Route exact path='/' element={<LoginPage  />}></Route>
+          <Route path='/Home'   element={<HomePage   />}></Route>
           <Route path='query1'  element={<Query1Page />}></Route>
           <Route path='query2'  element={<Query2Page />}></Route>
           <Route path='query3'  element={<Query3Page />}></Route>
