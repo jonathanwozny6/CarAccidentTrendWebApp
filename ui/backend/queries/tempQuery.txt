@@ -1,0 +1,13 @@
+`SELECT EXTRACT(DAY FROM Date_Time) as d, 
+       count(*) AS cnt
+       
+FROM Accident, Road, Location
+
+where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+     and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+     and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
+     and state = '${st}'
+
+GROUP BY EXTRACT(DAY FROM Date_Time)
+
+ORDER BY d ASC`
