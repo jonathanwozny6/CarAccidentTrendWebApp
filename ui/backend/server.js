@@ -115,24 +115,24 @@ app.get('/tempQuery', (req, res) => {
         // read in the sql query
         // const sqlQuery = fs.readFileSync('./queries/Query1.txt').toString();
          sqlQuery = `SELECT EXTRACT(DAY FROM Date_Time) as d, 
-                    count(*) AS cnt
-                    
-                    FROM Accident, Road, Location
-                    
-                    where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-                        and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
-                        and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
-                        and state = '${st}' 
-                    
-                    GROUP BY EXTRACT(DAY FROM Date_Time)
-                    
-                    ORDER BY d ASC`
+                        count(*) AS cnt
+                        
+                FROM Accident, Road, Location
+                
+                where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+                    and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+                    and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
+                    and state = '${st}'
+                
+                GROUP BY EXTRACT(DAY FROM Date_Time)
+                
+                ORDER BY d ASC`
 
         let conn
         try {
             conn = await oracledb.getConnection(config);
 
-            const result = await conn.execute(sqlQuery)
+            const result = await conn.execute(sqlQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT})
             console.log("Temp Query: Successfully returned.")
             return result;
         }
@@ -144,7 +144,7 @@ app.get('/tempQuery', (req, res) => {
         }
     }
     fetchDataTempQuery().then(dbRes => {
-        res.send(dbRes);
+        res.send(dbRes.rows);
     })
     .catch(err => {
         res.send(err);
@@ -157,3 +157,5 @@ app.listen(PORT, function(err) {
 
     console.log('listen to port %i', PORT);
 })
+
+
