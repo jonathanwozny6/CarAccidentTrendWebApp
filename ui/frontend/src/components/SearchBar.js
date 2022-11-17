@@ -1,5 +1,4 @@
 // from tutorial: https://www.youtube.com/watch?v=x7niho285qs
-
 import React from 'react';
 import {useEffect, useState} from 'react';
 import "./SearchBar.css";
@@ -16,7 +15,7 @@ function SearchBar({placeholder, data, childToParent}) {
     const FilterSearch = (event) => {
         const currSearch = event.target.value;
         const currFilter = data.filter((item) => {
-            return item.state.toLowerCase().startsWith(currSearch.toLowerCase());
+            return item.value.toLowerCase().startsWith(currSearch.toLowerCase());
         });
 
         if (currSearch === "" && filterOpen===false){
@@ -39,7 +38,6 @@ function SearchBar({placeholder, data, childToParent}) {
           setDataFiltered(currFilter);
           setFirstOpen(false)
           setResBoxHeight(Math.min(dataFiltered.length*20, numDisplay*20))
-          console.log(selection)
         }
         else{
           setFilterOpen(false)
@@ -55,8 +53,17 @@ function SearchBar({placeholder, data, childToParent}) {
     }
 
     const makeSelection = (event) => {
-        setSelection(String(event.target.innerText));
-        childToParent(String(event.target.innerText));
+        // get inner text of div element (full state name) and set selection
+        setSelection(event.target.innerText);
+
+        // get code and return for database query
+        let code = ""
+        for (const [key, value] of Object.entries(data)) {
+            if  (value.value === event.target.innerText){
+                code = value.code;
+            }
+        }
+        childToParent(code);
     }
 
     return (
@@ -71,12 +78,13 @@ function SearchBar({placeholder, data, childToParent}) {
             </div>
             {filterOpen===true && 
             (<div className="data-results" style={{height: resBoxHeight}}>
-                {dataFiltered.slice(0, 30).map((item, index) => {
-                    return <div className="search-item" key={index} onClick={makeSelection}>{item.state}</div>
+                {dataFiltered.slice(0, 55).map((item, index) => {
+                    return <div className="search-item" key={index} onClick={makeSelection}>{item.value}</div>
                 })}
             </div>
             )}
         </div>
+        
         
     )
 }
