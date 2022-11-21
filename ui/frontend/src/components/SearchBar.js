@@ -19,8 +19,9 @@ function SearchBar({placeholder, data, childToParent}) {
     // current input in search box
     const [currSearch, setCurrSearch] = useState(1);
 
-    // number of elements to display in dropdown
+    // number of elements to display in dropdown and height of input in pixel
     const numDisplay = 5;
+    const dropdownHeight = 30;
 
     // function for display of dropdown on user text input
     const FilterSearch = (event) => {
@@ -40,7 +41,7 @@ function SearchBar({placeholder, data, childToParent}) {
           setDataFiltered([]);
 
           // initialize display so that it will show at most 5 elements at once
-          setResBoxHeight(numDisplay*20)
+          setResBoxHeight(numDisplay*dropdownHeight)
         }
         // if the search bar is empty and dropdown open
         else if(currSearch ==="" && filterOpen===true){
@@ -51,7 +52,7 @@ function SearchBar({placeholder, data, childToParent}) {
           setDataFiltered(allItems);
 
           // set display to show at most 5 elements at once
-          setResBoxHeight(numDisplay*20)
+          setResBoxHeight(numDisplay*dropdownHeight)
         }
         // if the search bar is not empty and dropdown is not open
         else if (currSearch !== "" && filterOpen === false){
@@ -62,7 +63,7 @@ function SearchBar({placeholder, data, childToParent}) {
           setDataFiltered(currFilter);
 
           // set the dropdown to show either the specific maximum value or the filtered values if lower
-          setResBoxHeight(Math.min(dataFiltered.length*20, numDisplay*20))
+          setResBoxHeight(Math.min(dataFiltered.length*dropdownHeight, numDisplay*dropdownHeight))
         }
         // if the search bar is not empty and the dropdown is open
         else if (currSearch !== "" && filterOpen === true){
@@ -73,7 +74,7 @@ function SearchBar({placeholder, data, childToParent}) {
           setDataFiltered(currFilter);
 
           // set the dropdown to show either the specific maximum value or the filtered values if lower
-          setResBoxHeight(Math.min(dataFiltered.length*20, numDisplay*20))
+          setResBoxHeight(Math.min(dataFiltered.length*dropdownHeight, numDisplay*dropdownHeight))
         }
     }
 
@@ -112,8 +113,8 @@ function SearchBar({placeholder, data, childToParent}) {
             <div className="input-container">
                 <input className="search-input" type="text" placeholder={selection} onChange={FilterSearch}/>
                 <div className="down-arrow" onClick={OpenFilter}>
-                  <svg width="20" height="20">
-                    <polygon points="4,7 12,7 8,11"/>
+                  <svg width="100%" height="100%">
+                    <polygon points="8,12 22,12 15,18"/>
                   </svg>
                 </div>
             </div>
