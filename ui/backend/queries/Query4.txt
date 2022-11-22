@@ -1,0 +1,16 @@
+/*Daily accident frequency for each year for user-selected states*/
+
+
+SELECT TRUNC(Date_Time) as acc_date, 
+       count(*) AS cnt
+       
+FROM Accident, Road, Location
+
+where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+     and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+     and Date_Time < TO_DATE('2018/01/01', 'YYYY/MM/DD')
+     and state = 'NY' 
+
+GROUP BY TRUNC(Date_Time)
+
+ORDER BY acc_date ASC;

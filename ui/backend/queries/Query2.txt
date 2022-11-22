@@ -1,0 +1,18 @@
+/*The number of accidents per day of a given severity over a given period for 
+highway accidents or regular road (non-highway) accidents for user specified locations.*/
+
+SELECT TRUNC(Date_Time) as acc_date,
+       --Severity as s,
+       count(*) AS cnt
+       
+FROM Accident, Road, Location
+
+where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st and state = 'NY' 
+    and severity = 2
+    and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+    and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
+
+GROUP BY TRUNC(Date_Time),
+       Severity
+       
+ORDER BY acc_date, S ASC;
