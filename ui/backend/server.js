@@ -1,6 +1,7 @@
 const express = require('express');
 const oracledb = require('oracledb');
 const cors = require('cors');
+var moment = require('moment');
 
 const app = express();
 const PORT = 8080;
@@ -149,6 +150,47 @@ app.get('/tempQuery', (req, res) => {
     .catch(err => {
         res.send(err);
     })
+})
+
+app.get('/query2Input', (req, res) => {
+    async function fetchDataTempQuery() {
+        const st = req.query.state
+
+        sqlQuery = `SELECT EXTRACT(DAY FROM Date_Time) as d, 
+                           count(*) AS cnt
+                
+                    FROM Accident, Road, Location
+                    
+                    where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+                        and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+                        and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
+                        and state = '${st}'
+                    
+                    GROUP BY EXTRACT(DAY FROM Date_Time)
+                    
+                    ORDER BY d ASC`
+
+        let conn
+        try {
+            conn = await oracledb.getConnection(config);
+
+            const result = await conn.execute(sqlQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT})
+            console.log("Query2: Successfully returned.")
+            return result;
+        }
+        catch (error) {
+            console.log("Error in Temp Query: in connection or query");
+            console.log(error);
+            console.log(sqlQuery);
+            return error;
+        }
+    }
+    fetchDataTempQuery().then(dbRes => {
+        res.send(dbRes.rows);
+    })
+    .catch(err => {
+        res.send(err);
+    })       
 })
 
 
