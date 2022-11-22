@@ -1,16 +1,19 @@
-`SELECT EXTRACT(YEAR FROM Date_Time) AS Yr,
-       EXTRACT(MONTH FROM Date_Time) AS Mo, 
-       EXTRACT(DAY FROM Date_Time) AS D,
+/*Find the moving average of the accident frequency of each day for a 
+specific set of geographic areas selected by the user over a specified 
+period (months, years)*/
+
+SELECT TRUNC(Date_Time) as acc_date,
        count(*) AS cnt,
        AVG(COUNT(*)) OVER 
-          (ORDER BY EXTRACT(YEAR FROM Date_Time) ROWS BETWEEN 3 PRECEDING AND CURRENT ROW) AS moving_average
+          (ORDER BY TRUNC(Date_Time) ROWS BETWEEN 3 PRECEDING AND CURRENT ROW) AS moving_average
        
 FROM Accident, Road, Location
 
 where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st and state = '${st}'
+     and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+     and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
 
-GROUP BY EXTRACT(YEAR FROM Date_Time),
-         EXTRACT(MONTH FROM Date_Time), 
-         EXTRACT(DAY FROM Date_Time)
+GROUP BY TRUNC(Date_Time)
        
-ORDER BY YR, Mo, D ASC`
+ORDER BY acc_date ASC;
+
