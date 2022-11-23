@@ -20,7 +20,7 @@ const Query2 = () => {
 		// options for data request to backend
 		const options = {
             method: 'GET',
-            url: 'http://localhost:8080/query2Input',
+            url: 'http://localhost:8080/query2',
             params: {state: stateUS},
         }
 

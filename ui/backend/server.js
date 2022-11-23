@@ -68,36 +68,6 @@ app.get('/locations', (req, res) => {
     })
 })
 
-app.get('/query1', (req, res) => {
-    // read in parameter specified in api call
-    var st = req.query.state1;
-
-    // read in the sql query
-    // const sqlQuery = fs.readFileSync('./queries/Query1.txt').toString();
-    sqlQuery = `SELECT EXTRACT(YEAR FROM Date_Time) AS Yr,
-                    EXTRACT(MONTH FROM Date_Time) AS Mo, 
-                    EXTRACT(DAY FROM Date_Time) AS D,
-                    count(*) AS cnt,
-                    AVG(COUNT(*)) OVER 
-                    (ORDER BY EXTRACT(YEAR FROM Date_Time) ROWS BETWEEN 3 PRECEDING AND CURRENT ROW) AS moving_average
-    
-                    FROM Accident, Road, Location
-
-                    where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st and state = '${st}'
-                    
-                    GROUP BY EXTRACT(YEAR FROM Date_Time),
-                            EXTRACT(MONTH FROM Date_Time), 
-                            EXTRACT(DAY FROM Date_Time)
-                            
-                    ORDER BY YR, Mo, D ASC`
-    fetchData(sqlQuery).then(dbRes => {
-        res.send(dbRes);
-    })
-    .catch(err => {
-        res.send(err);
-    })
-})
-
 app.get('/tempQuery', (req, res) => {
     // read in parameter specified in api call
     var st = req.query.state1;
@@ -126,8 +96,35 @@ app.get('/tempQuery', (req, res) => {
     })
 })
 
+app.get('/query1', (req, res) => {
+    // read in parameter specified in api call
+    var st = req.query.state1;
 
-app.get('/query2Input', (req, res) => {
+    // read in the sql query
+    // const sqlQuery = fs.readFileSync('./queries/Query1.txt').toString();
+    sqlQuery = `SELECT TRUNC(Date_Time) as acc_date,
+                       count(*) AS cnt,
+                       AVG(COUNT(*)) OVER 
+                          (ORDER BY TRUNC(Date_Time) ROWS BETWEEN 3 PRECEDING AND CURRENT ROW) AS moving_average
+                    
+                FROM Accident, Road, Location
+
+                where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st and state = '${st}'
+                and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+                and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
+
+                GROUP BY TRUNC(Date_Time)
+                    
+                ORDER BY acc_date ASC`
+    fetchData(sqlQuery).then(dbRes => {
+        res.send(dbRes);
+    })
+    .catch(err => {
+        res.send(err);
+    })
+})
+
+app.get('/query2', (req, res) => {
 
     const st = req.query.state
 
@@ -153,6 +150,93 @@ app.get('/query2Input', (req, res) => {
     })       
 })
 
+app.get('/query3', (req, res) => {
+
+    const st = req.query.state
+
+    sqlQuery = `SELECT acc_date, 
+                AVG_SEV/(SELECT MAX(severity) FROM Accident) norm_avg_sev, 
+                AVG_VIS/(SELECT MAX(visibility) FROM Environment) as norm_avg_vis 
+
+                FROM
+                (SELECT TRUNC(Date_Time) as acc_date,
+                    AVG(Severity) as avg_sev,
+                    AVG(Visibility) as avg_vis
+                    
+                FROM Accident, Road, Location, Environment
+
+                where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+                and env_id = fk_env_id and state = '${st}' 
+                and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+                and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
+
+                GROUP BY TRUNC(Date_Time)
+                    
+                ORDER BY acc_date ASC)`
+            
+    fetchData(sqlQuery).then(dbRes => {
+        res.send(dbRes.rows);
+    })
+    .catch(err => {
+        res.send(err);
+    })       
+})
+
+app.get('/query4', (req, res) => {
+
+    const st = req.query.state
+
+    sqlQuery = `SELECT TRUNC(Date_Time) as acc_date, 
+                       count(*) AS cnt
+                    
+                FROM Accident, Road, Location
+
+                where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+                and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+                and Date_Time < TO_DATE('2018/01/01', 'YYYY/MM/DD')
+                and state = '${st}' 
+
+                GROUP BY TRUNC(Date_Time)
+
+                ORDER BY acc_date ASC;
+`
+            
+    fetchData(sqlQuery).then(dbRes => {
+        res.send(dbRes.rows);
+    })
+    .catch(err => {
+        res.send(err);
+    })       
+})
+
+app.get('/query5', (req, res) => {
+
+    const st = req.query.state
+
+    // THIS IS QUERY 4 -> NEED TO CORRECT QUERY 5 AND CHANGE
+
+    sqlQuery = `SELECT TRUNC(Date_Time) as acc_date, 
+                       count(*) AS cnt
+                    
+                FROM Accident, Road, Location
+
+                where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+                and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+                and Date_Time < TO_DATE('2018/01/01', 'YYYY/MM/DD')
+                and state = '${st}' 
+
+                GROUP BY TRUNC(Date_Time)
+
+                ORDER BY acc_date ASC;
+`
+            
+    fetchData(sqlQuery).then(dbRes => {
+        res.send(dbRes.rows);
+    })
+    .catch(err => {
+        res.send(err);
+    })       
+})
 
 app.listen(PORT, function(err) {
     if (err) console.log(err);
