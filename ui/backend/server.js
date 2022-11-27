@@ -41,11 +41,11 @@ async function fetchData(sqlQuery) {
         conn = await oracledb.getConnection(config);
 
         const result = await conn.execute(sqlQuery, [], {outFormat: oracledb.OUT_FORMAT_OBJECT})
-        console.log("Query2: Successfully returned.")
+        console.log("Query Successfully returned.")
         return result;
     }
     catch (error) {
-        console.log("Error in Temp Query: in connection or query");
+        console.log("Error in Query: in connection or query");
         console.log(error);
         console.log(sqlQuery);
         return error;
@@ -59,6 +59,66 @@ app.get('/', (req, res) => {
 // this call is a template for making the queries
 app.get('/locations', (req, res) => {
     sqlQuery = "SELECT * FROM LOCATION where STATE = 'AZ'"
+
+    fetchData(sqlQuery).then(dbRes => {
+        res.send(dbRes);
+    })
+    .catch(err => {
+        res.send(err);
+    })
+})
+
+app.get('/accCounts', (req,res) => {
+    // accident counts
+    sqlQuery = "SELECT COUNT(*) FROM ACCIDENT"
+
+    fetchData(sqlQuery).then(dbRes => {
+        res.send(dbRes);
+    })
+    .catch(err => {
+        res.send(err);
+    })
+})
+
+app.get('/locCounts', (req,res) => {
+    // location counts
+    sqlQuery = "SELECT COUNT(*) FROM LOCATION"
+
+    fetchData(sqlQuery).then(dbRes => {
+        res.send(dbRes);
+    })
+    .catch(err => {
+        res.send(err);
+    })
+})
+
+app.get('/airportCounts', (req,res) => {
+    // accident count
+    sqlQuery = "SELECT COUNT(*) FROM AIRPORTS"
+
+    fetchData(sqlQuery).then(dbRes => {
+        res.send(dbRes);
+    })
+    .catch(err => {
+        res.send(err);
+    })
+})
+
+app.get('/roadCounts', (req,res) => {
+    // accident count
+    sqlQuery = "SELECT COUNT(*) FROM ROAD"
+
+    fetchData(sqlQuery).then(dbRes => {
+        res.send(dbRes);
+    })
+    .catch(err => {
+        res.send(err);
+    })
+})
+
+app.get('/envCounts', (req,res) => {
+    // accident count
+    sqlQuery = "SELECT COUNT(*) FROM ENVIRONMENT"
 
     fetchData(sqlQuery).then(dbRes => {
         res.send(dbRes);
