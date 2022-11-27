@@ -3,7 +3,8 @@ import {useState} from 'react';
 import SearchBar from '../components/SearchBar';
 import dataStates from "../ParamData/States.json"
 import "./PagesCSS/Query2.css"
-import TempQuery from "./TempQuery"
+// import TempQuery from "./TempQuery"
+import axios from "axios";
 
 const Query2 = () => {
 
@@ -145,6 +146,20 @@ const Query2 = () => {
 				}
 
 		}
+
+		// options for data request to backend
+		const options = {
+            method: 'GET',
+            url: 'http://localhost:8080/query2',
+            params: {state: stateUS},
+        }
+
+		axios.request(options).then((response) => {
+            console.log(response.data)
+        }).catch((error) => {
+            console.error(error)
+        })
+        console.log(stateUS)
 
 		return (
 			<div className="page-container">

@@ -1,0 +1,29 @@
+THIS IS INCORRECT!!!
+
+/*Finds the monthly total number of accidents on precipitous days vs 
+clear days vs overcast days during the selected time period.*/
+
+
+SELECT acc_date, weather_condition, cnt/(select count(*) from accident, environment, road, location
+        where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+     and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '2019' 
+     and weather_condition = 'Clear' and state = 'NY' ) as norm_cnt
+    
+FROM
+
+(SELECT TRUNC(Date_Time) as acc_date,
+       weather_condition,
+       count(*) AS cnt
+       
+FROM Accident, Road, Location, Environment
+
+where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+     and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '2019' 
+     and weather_condition = 'Clear' and state = 'NY' 
+     and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+     and Date_Time < TO_DATE('2018/01/01', 'YYYY/MM/DD')
+
+GROUP BY TRUNC(Date_Time),
+         weather_condition
+
+ORDER BY acc_date, weather_condition ASC);
