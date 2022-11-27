@@ -1,4 +1,5 @@
-// from tutorial: https://www.youtube.com/watch?v=x7niho285qs
+// some aspects of this code were taken from this tutorial: https://www.youtube.com/watch?v=x7niho285qs
+// https://www.freecodecamp.org/news/pass-data-between-components-in-react/ 
 import React from 'react';
 import {useEffect, useState} from 'react';
 import "./SearchBar.css";
@@ -17,7 +18,7 @@ function SearchBar({placeholder, data, childToParent}) {
     const [selection, setSelection] = useState(placeholder);
 
     // current input in search box
-    const [currSearch, setCurrSearch] = useState(1);
+    const [currSearch, setCurrSearch] = useState("");
 
     // number of elements to display in dropdown and height of input in pixel
     const numDisplay = 5;
@@ -26,8 +27,7 @@ function SearchBar({placeholder, data, childToParent}) {
     // function for display of dropdown on user text input
     const FilterSearch = (event) => {
 
-        // set the current search to the user input
-        setCurrSearch(event.target.value);
+        const currSearch = event.target.value
 
         // get the current filtered data
         const currFilter = data.filter((item) => {
@@ -42,9 +42,12 @@ function SearchBar({placeholder, data, childToParent}) {
 
           // initialize display so that it will show at most 5 elements at once
           setResBoxHeight(numDisplay*dropdownHeight)
+
+          console.log(1)
         }
         // if the search bar is empty and dropdown open
         else if(currSearch ==="" && filterOpen===true){
+
           // show all options
           const allItems = data.map((item) => {
             return item;
@@ -53,9 +56,12 @@ function SearchBar({placeholder, data, childToParent}) {
 
           // set display to show at most 5 elements at once
           setResBoxHeight(numDisplay*dropdownHeight)
+
+          console.log(2)
         }
         // if the search bar is not empty and dropdown is not open
         else if (currSearch !== "" && filterOpen === false){
+
           // open the dropdown
           setFilterOpen(true)
 
@@ -64,9 +70,12 @@ function SearchBar({placeholder, data, childToParent}) {
 
           // set the dropdown to show either the specific maximum value or the filtered values if lower
           setResBoxHeight(Math.min(dataFiltered.length*dropdownHeight, numDisplay*dropdownHeight))
+
+          console.log(3)
         }
         // if the search bar is not empty and the dropdown is open
         else if (currSearch !== "" && filterOpen === true){
+          
           // set dropdown to open
           setFilterOpen(true)
 
@@ -75,8 +84,9 @@ function SearchBar({placeholder, data, childToParent}) {
 
           // set the dropdown to show either the specific maximum value or the filtered values if lower
           setResBoxHeight(Math.min(dataFiltered.length*dropdownHeight, numDisplay*dropdownHeight))
+
         }
-    }
+      }
 
     // function to open dropdown on click
     const OpenFilter = () => {
