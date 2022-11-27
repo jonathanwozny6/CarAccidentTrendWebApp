@@ -159,6 +159,9 @@ app.get('/tempQuery', (req, res) => {
 app.get('/query1', (req, res) => {
     // read in parameter specified in api call
     var st = req.query.state1;
+    // const d1 = req.query.date1
+    // const d2 = req.query.date2
+    
 
     // read in the sql query
     // const sqlQuery = fs.readFileSync('./queries/Query1.txt').toString();
@@ -187,6 +190,8 @@ app.get('/query1', (req, res) => {
 app.get('/query2', (req, res) => {
 
     const st = req.query.state
+    // const d1 = req.query.date1
+    // const d2 = req.query.date2
 
     sqlQuery = `SELECT EXTRACT(DAY FROM Date_Time) as d, 
                        count(*) AS cnt
@@ -213,6 +218,8 @@ app.get('/query2', (req, res) => {
 app.get('/query3', (req, res) => {
 
     const st = req.query.state
+    // const d1 = req.query.date1
+    // const st = req.query.date2
 
     sqlQuery = `SELECT acc_date, 
                 AVG_SEV/(SELECT MAX(severity) FROM Accident) norm_avg_sev, 
@@ -245,6 +252,13 @@ app.get('/query3', (req, res) => {
 app.get('/query4', (req, res) => {
 
     const st = req.query.state
+    // const d1 = req.query.date1
+    // const d2 = req.query.date2
+    // var yr = PARSE D1 AND GET THE YEAR 
+
+    // OR -> SHOULD JUST DO THIS INSTEAD AND GET THE YEAR
+
+    // const yr = req.query.year
 
     sqlQuery = `SELECT TRUNC(Date_Time) as acc_date, 
                        count(*) AS cnt
