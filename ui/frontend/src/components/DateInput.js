@@ -40,8 +40,27 @@ function DateInput({header, placeholder, childToParent}){
       switch(mostRecSlash){
 
         case -1:
-          console.log("Pos -1")
-          break;
+            console.log("Pos -1")
+
+            // restrict year entry to 4 digits
+            if (currInput.length > 4){
+                event.target.value = restrictEntry(currInput);
+            }
+
+            const minYear = '2018';
+            const maxYear = '2021';
+
+            for (let i = 0; i < minYear.length-1; i++)
+            if (event.target.value.length === i+1){
+                if (parseInt(event.target.value[i]) < parseInt(minYear[i]) || parseInt(event.target.value[i]) > parseInt(maxYear[i]))
+                    event.target.value = restrictEntry(currInput);
+            }
+
+            if (event.target.value.length == 4){
+                if (parseInt(event.target.value) < parseInt(minYear) || parseInt(event.target.value) > parseInt(maxYear)){
+                    event.target.value = restrictEntry(currInput);
+                }
+            }
       
         case 4:
             console.log("Pos 4")
