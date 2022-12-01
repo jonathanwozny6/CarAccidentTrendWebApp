@@ -1,11 +1,20 @@
 import React from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import SearchBar from '../components/SearchBar';
 import DateInput from '../components/DateInput'
 import dataStates from "../ParamData/States.json"
 import "./PagesCSS/Query2.css"
 // import TempQuery from "./TempQuery"
 import axios from "axios";
+import {
+    LineChart,
+    ResponsiveContainer,
+    Legend, Tooltip,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid
+} from 'recharts';
 
 const Query2 = () => {
 
@@ -35,20 +44,30 @@ const Query2 = () => {
 				setEndDate(endDateInput);
 		}
 
-		// options for data request to backend
-		const options = {
-            method: 'GET',
-            url: 'http://localhost:8080/query2',
-            params: {state: stateUS},
-        }
+		const [data, setData] = React.useState(); //{D: "", CNT: ""}
 
-		axios.request(options).then((response) => {
-            console.log(response.data)
-        }).catch((error) => {
-            console.error(error)
-        })
-        console.log(stateUS)
+		useEffect(() => {
+			// options for data request to backend
+			const options = {
+				method: 'GET',
+				url: 'http://localhost:8080/query2',
+				params: {state: stateUS},
+			}
 
+			axios.request(options).then((response) => {
+				if (response.status===200) {
+					const fetchedData = response.data;
+					console.log('fetchedData', fetchedData.length);
+					setData(fetchedData)
+				}
+				// console.log("successfully retrieved data for query 2")
+				console.log(response.data)
+			}).catch((error) => {
+				console.error(error)
+			})
+			console.log(options.params.state)
+		}, [stateUS]);
+		
 		return (
 			<div className="page-container">
 						<div className="input-pnl">
@@ -65,7 +84,21 @@ const Query2 = () => {
 								<DateInput header="End Date" placeholder="YYYY/MM/DD" childToParent={getEndDate}/>
 						</div>
 						<div className="lineplot">
-							INSERT PLOT HERE
+							<h1 className="text-heading">
+							</h1>
+							<ResponsiveContainer width="100%" aspect={2} >
+								<LineChart data = {data} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
+									<CartesianGrid strokeDasharray="3 3"/>
+									<XAxis dataKey="D" />
+									<YAxis></YAxis>
+									<Legend />
+									<Tooltip />
+									<Line
+										dataKey="CNT"
+										stroke="black" activeDot={{ r: 8 }}
+										/>
+								</LineChart>
+							</ResponsiveContainer>
 						</div>
 				</div>
 		);
