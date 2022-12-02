@@ -4,7 +4,7 @@ import React from 'react';
 import {useEffect, useState} from 'react';
 import "./SearchBar.css";
 
-function SearchBar({placeholder, data, childToParent}) {
+function SearchBar({placeholder, data, childToParent, index}) {
     // stores list of filtered data
     const [dataFiltered, setDataFiltered] = useState(data.map(item => {return item.value}));
 
@@ -115,7 +115,7 @@ function SearchBar({placeholder, data, childToParent}) {
         }
 
         // send data to parent
-        childToParent(code);
+        childToParent(code, index);
     }
 
     return (

@@ -22,7 +22,8 @@ const Query2 = () => {
 		const [numLocs, setNumLocs] = useState(1);
 
 		// US State selected from Search bar dropdown
-		const [stateUS, setStateUS] = useState("")
+		const [stateUS, setStateUS] = useState([])
+		// let stateUS = ["Enter a State..."]
 
 		// start and end date input
 		const [startDate, setStartDate] = useState("");
@@ -30,8 +31,10 @@ const Query2 = () => {
 
 
 		// function to pass into Search bar dropdown to get receive user input
-		const childToParent = (childSelectedState) => {
-				setStateUS(childSelectedState);
+		const childToParent = (childSelectedState, index) => {
+				let oldStateUS = stateUS;
+				oldStateUS[index] = childSelectedState;
+				setStateUS(oldStateUS);
 		}
 
 		// function to pass into start date input to receive user input
@@ -42,6 +45,12 @@ const Query2 = () => {
 		// function to pass into end date input to receive user input
 		const getEndDate = (endDateInput) => {
 				setEndDate(endDateInput);
+		}
+
+		// function to add line when "Add Line" button is clicked
+		const addLineClicked = () => {
+				let oldStateUS = stateUS
+				setStateUS(oldStateUS.concat("Enter a State..."));
 		}
 
 		const [data, setData] = React.useState(); //{D: "", CNT: ""}
@@ -74,10 +83,14 @@ const Query2 = () => {
 								<div className="input-location-section">
 										<h3 className='input-pnl-heading'>Location</h3>
 										<div className="dropdown">
-												<SearchBar placeholder="Enter a State..." data={dataStates} childToParent={childToParent}/>
+												{
+													stateUS.map((state, index) => {
+															return <SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={index}/>
+													})
+												}
 										</div>
-										<button className="add-curve-btn">
-												Add Curve +
+										<button className="add-curve-btn" onClick={addLineClicked}>
+												Add Line +
 										</button>
 								</div>
 								<DateInput header="Start Date" placeholder="YYYY/MM/DD" childToParent={getStartDate}/>
@@ -106,86 +119,3 @@ const Query2 = () => {
 
 export default Query2;
 
-
-
-
-
-
-
-// 	switch(numSlashes){
-
-		// 		case 0:
-		// 			// make sure first position is a 1 or 0
-		// 			if (currDate[0] !== '0' && currDate[0] !== '1'){
-		// 					event.target.value = '';
-		// 			}
-
-		// 			// if the first value is 0, only let the next month value be natural number between 1 and 9 inclusive
-		// 			if (event.target.value[0] === '0'){
-		// 					// if a '/' is put prematurely
-		// 					if (event.target.value[1] === '/'){
-		// 						event.target.value = event.target.value[0];
-		// 					}
-		// 					// if second month character is not a number
-		// 					else if (event.target.value.charCodeAt(1) < 49 || event.target.value.charCodeAt(1) > 57) {
-		// 							event.target.value = event.target.value[0]
-		// 					}
-		// 		 	} 
-		// 			// if the first value is 1
-		// 			else if (event.target.value[0] === '1'){
-		// 					// the second month value can only be 0, 1, 2
-		// 					if (event.target.value[1] !== '0' && event.target.value[1] !== '1' && event.target.value[1] !== '2') {
-		// 							event.target.value = event.target.value[0];
-		// 					}
-		// 			}
-					
-		// 			break;
-
-
-		// 		case 1:
-		// 			console.log("Here")
-
-
-		// 			break;
-			
-		// 	}
-		// 	console.log(event.target.value)
-
-// 	switch(numSlashes){
-
-		// 		case 0:
-		// 			// make sure first position is a 1 or 0
-		// 			if (currDate[0] !== '0' && currDate[0] !== '1'){
-		// 					event.target.value = '';
-		// 			}
-
-		// 			// if the first value is 0, only let the next month value be natural number between 1 and 9 inclusive
-		// 			if (event.target.value[0] === '0'){
-		// 					// if a '/' is put prematurely
-		// 					if (event.target.value[1] === '/'){
-		// 						event.target.value = event.target.value[0];
-		// 					}
-		// 					// if second month character is not a number
-		// 					else if (event.target.value.charCodeAt(1) < 49 || event.target.value.charCodeAt(1) > 57) {
-		// 							event.target.value = event.target.value[0]
-		// 					}
-		// 		 	} 
-		// 			// if the first value is 1
-		// 			else if (event.target.value[0] === '1'){
-		// 					// the second month value can only be 0, 1, 2
-		// 					if (event.target.value[1] !== '0' && event.target.value[1] !== '1' && event.target.value[1] !== '2') {
-		// 							event.target.value = event.target.value[0];
-		// 					}
-		// 			}
-					
-		// 			break;
-
-
-		// 		case 1:
-		// 			console.log("Here")
-
-
-		// 			break;
-			
-		// 	}
-		// 	console.log(event.target.value)
