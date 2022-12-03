@@ -109,7 +109,7 @@ const Query2 = () => {
 									<Legend />
 									<Tooltip />
 									<Line
-										dataKey="CNT"
+										dataKey={stateUS[0]}
 										stroke="black" activeDot={{ r: 8 }}
 										/>
 								</LineChart>
