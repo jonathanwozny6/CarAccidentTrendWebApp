@@ -1,4 +1,6 @@
 import React from 'react';
+import {useState, useEffect} from 'react';
+import axios from "axios";
 
 const Query3 = () => {
 	const [numLocs, setNumLocs] = useState(1);

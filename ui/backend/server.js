@@ -190,24 +190,45 @@ app.get('/query1', (req, res) => {
 app.get('/query2', (req, res) => {
 
     const st = req.query.state
-    // const d1 = req.query.date1
-    // const d2 = req.query.date2
+    const d1 = req.query.sDate
+    const d2 = req.query.eDate
 
-    sqlQuery = `SELECT EXTRACT(DAY FROM Date_Time) as d, 
-                       count(*) AS cnt
+    sqlQuery = 
+            // `SELECT EXTRACT(DAY FROM Date_Time) as d, 
+            //            count(*) AS cnt
             
-                FROM Accident, Road, Location
+            //     FROM Accident, Road, Location
                 
-                where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-                    and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
-                    and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
-                    and state = '${st}'
+            //     where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+            //         and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+            //         and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
+            //         and state = '${st}'
                 
-                GROUP BY EXTRACT(DAY FROM Date_Time)
+            //     GROUP BY EXTRACT(DAY FROM Date_Time)
                 
-                ORDER BY d ASC`
+            //     ORDER BY d ASC`
+
+                `SELECT TRUNC(Date_Time) as acc_date,
+                                count(*) AS cnt
+                                
+                        FROM Accident, Road, Location
+                        
+                        where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+                            and state = '${st}' 
+                            and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
+                            and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
+                        
+                        GROUP BY TRUNC(Date_Time)
+                
+                        ORDER BY acc_date ASC`
+                
     
     fetchData(sqlQuery).then(dbRes => {
+        // remove zulu time on datetimes returned from sql query
+        for (let i = 0; i < dbRes.rows.length; i++) {
+            dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
+        }
+        console.log(dbRes.rows)
         res.send(dbRes.rows);
     })
     .catch(err => {

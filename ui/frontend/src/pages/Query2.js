@@ -15,6 +15,7 @@ import {
     YAxis,
     CartesianGrid
 } from 'recharts';
+import * as scale from 'd3-scale'
 
 const Query2 = () => {
 
@@ -60,7 +61,7 @@ const Query2 = () => {
 			const options = {
 				method: 'GET',
 				url: 'http://localhost:8080/query2',
-				params: {state: stateUS},
+				params: {state: stateUS[0], sDate: startDate, eDate: endDate},
 			}
 
 			axios.request(options).then((response) => {
@@ -74,8 +75,9 @@ const Query2 = () => {
 			}).catch((error) => {
 				console.error(error)
 			})
-			console.log(options.params.state)
-		}, [stateUS]);
+			console.log(stateUS)
+			console.log(options)
+		}, [stateUS, startDate, endDate]);
 		
 		return (
 			<div className="page-container">
@@ -100,9 +102,9 @@ const Query2 = () => {
 							<h1 className="text-heading">
 							</h1>
 							<ResponsiveContainer width="100%" aspect={2} >
-								<LineChart data = {data} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
+								<LineChart data = {data} xScale={scale.scaleTime} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
 									<CartesianGrid strokeDasharray="3 3"/>
-									<XAxis dataKey="D" />
+									<XAxis dataKey="ACC_DATE" numberOfTicks={6} />
 									<YAxis></YAxis>
 									<Legend />
 									<Tooltip />
