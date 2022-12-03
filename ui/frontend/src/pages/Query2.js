@@ -30,7 +30,6 @@ const Query2 = () => {
 		const [startDate, setStartDate] = useState("");
 		const [endDate, setEndDate] = useState("");
 
-
 		// function to pass into Search bar dropdown to get receive user input
 		const childToParent = (childSelectedState, index) => {
 				let oldStateUS = stateUS;
@@ -60,8 +59,8 @@ const Query2 = () => {
 			// options for data request to backend
 			const options = {
 				method: 'GET',
-				url: 'http://localhost:8080/query2',
-				params: {state: stateUS[0], sDate: startDate, eDate: endDate},
+				url: `http://localhost:8080/query2/${stateUS[0]}`, 
+				params: {sDate: startDate, eDate: endDate},
 			}
 
 			axios.request(options).then((response) => {
