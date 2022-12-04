@@ -22,7 +22,8 @@ const Query2 = () => {
 
 		// all data
 		var myData = {}
-		var stateLeg = []
+
+		const [stateLeg, setStateLeg] = useState([]);
 
 		// number of locations on the line plot
 		const [numLocs, setNumLocs] = useState(1);
@@ -71,8 +72,6 @@ const Query2 = () => {
 				if (response.status===200) {
 					const fetchedData = response.data;
 					setData(fetchedData);
-					myData = fetchedData;
-					console.log("My Data 1", myData)
 				}
 			}).catch((error) => {
 				console.error(error)
@@ -94,28 +93,7 @@ const Query2 = () => {
 					if (response.status===200) {
 						const fetchedData = response.data;
 						console.log('fetchedData', fetchedData.length, fetchedData);
-						// setData(fetchedData)
-						// console.log("Fetched", fetchedData)
-
-						// if (i == 0) {
-						// 	myData = fetchedData
-						// }
-						// else {
-						// 	for (let k = 0; k < myData.length; k++) {
-						// 		myData[k][`${stateUS[i]}`] = 0
-						// 	}
-	
-						// 	let j = 0;
-						// 	for (let k = 0; k < fetchedData.length; k++) {
-						// 		while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
-						// 			j = j + 1
-						// 			console.log(fetchedData[k]["ACC_DATE"], myData[j]["ACC_DATE"])
-						// 		}
-						// 		myData[j][`${stateUS[i]}`] = fetchedData[k][`${stateUS[i]}`]
-						// 	}
-						// }
 						myData = data
-						console.log("My Data 3", myData)
 
 						for (let k = 0; k < myData.length; k++) {
 							myData[k][`${stateUS[i]}`] = 0
@@ -125,32 +103,51 @@ const Query2 = () => {
 						for (let k = 0; k < fetchedData.length; k++) {
 							while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
 								j = j + 1
-								console.log(fetchedData[k]["ACC_DATE"], myData[j]["ACC_DATE"])
 							}
 							myData[j][`${stateUS[i]}`] = fetchedData[k][`${stateUS[i]}`]
 						}
-
-						for (let i = 0; i < stateUS.length - 1; i++) {
-							stateLeg.concat(stateUS[i]);
-						}
 						
-						console.log("State leg", stateLeg)
-
-						// $.extend(true, myData, fetchedData)
-
 						setData(myData)
 						
-						console.log("My Data 4", myData)
-						// myData = fetchedData						
+						console.log("My Data", myData)
 					}
-					// console.log("successfully retrieved data for query 2")
-					// console.log(response.data)
 				}).catch((error) => {
 					console.error(error)
 				})
 			}
 			
 		}, [stateUS]);
+
+
+		// // https://codesandbox.io/s/81u1y?file=/src/App.js
+		// const getRandomColor = () => {
+		// 	return "#" + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, "0");
+		//   };
+
+		// const lines = () => {
+		// 	// const entries = data.map((option) => {
+		// 	//   const keys = Object.keys(option);
+		// 	//   return keys;
+		// 	// });
+		// 	// const flattened = entries.reduce((prev, current) => {
+		// 	//   prev = prev.concat(current);
+		// 	//   return prev;
+		// 	// }, []);
+		// 	// const filtered = flattened.filter((key) => key !== "date");
+		// 	// const uniqueKeys = [...new Set(filtered)];
+		// 	let tempStates = []
+		// 	for (let i = 0; i < stateUS.length - 1; i++)
+		// 	{
+		// 		tempStates.push(stateUS[i])
+		// 	}
+
+		// 	setStateLeg(tempStates);
+		// 	const Lines = setStateLeg.map(function(key){
+		// 	  return <Line type="monotone" stroke={getRandomColor()} dataKey={key} />;
+		// 	});
+		// 	return Lines;
+		//   };
+
 		
 		return (
 			<div className="page-container">
@@ -181,9 +178,13 @@ const Query2 = () => {
 									<YAxis></YAxis>
 									<Legend />
 									<Tooltip />
+									{/* {lines()} */}
 									<Line
+
 										dataKey={"AZ"}
 										stroke="black" activeDot={{ r: 8 }}
+									
+
 										/>
 								</LineChart>
 							</ResponsiveContainer>
