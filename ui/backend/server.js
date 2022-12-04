@@ -11,6 +11,7 @@ var SQL = require('sql-template-strings')
 
 // reading from files (for sql queries)
 const fs = require('fs');
+const { query } = require('express');
 
 // user database information
 const config = {
@@ -156,6 +157,34 @@ app.get('/tempQuery', (req, res) => {
     })
 })
 
+app.get('/dates', (req, res) => {
+    // read in parameter specified in api call
+    const d1 = req.query.sDate
+    const d2 = req.query.eDate
+    
+
+    // read in the sql query
+    // const sqlQuery = fs.readFileSync('./queries/Query1.txt').toString();
+    sqlQuery = `SELECT UNIQUE TRUNC(DATE_TIME) AS ACC_DATE 
+
+                FROM ACCIDENT
+                
+                WHERE Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
+                    and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
+                    
+                ORDER BY ACC_DATE ASC`
+
+    fetchData(sqlQuery).then(dbRes => {
+        for (let i = 0; i < dbRes.rows.length; i++) {
+            dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
+        }
+        res.send(dbRes.rows);
+    })
+    .catch(err => {
+        res.send(err);
+    })
+})
+
 app.get('/query1', (req, res) => {
     // read in parameter specified in api call
     var st = req.query.state1;
@@ -187,9 +216,10 @@ app.get('/query1', (req, res) => {
     })
 })
 
-app.get('/query2', (req, res) => {
-
-    const st = req.query.state
+app.get('/query2/:state', (req, res) => {
+    
+    // const st = req.query.state
+    const st = req.params.state
     const d1 = req.query.sDate
     const d2 = req.query.eDate
 
@@ -209,7 +239,7 @@ app.get('/query2', (req, res) => {
             //     ORDER BY d ASC`
 
                 `SELECT TRUNC(Date_Time) as acc_date,
-                                count(*) AS cnt
+                                count(*) AS ${st}
                                 
                         FROM Accident, Road, Location
                         
@@ -220,21 +250,19 @@ app.get('/query2', (req, res) => {
                         
                         GROUP BY TRUNC(Date_Time)
                 
-                        ORDER BY acc_date ASC`
-                
-    
+                        ORDER BY acc_date ASC`      
     fetchData(sqlQuery).then(dbRes => {
         // remove zulu time on datetimes returned from sql query
         for (let i = 0; i < dbRes.rows.length; i++) {
             dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
         }
-        console.log(dbRes.rows)
         res.send(dbRes.rows);
     })
     .catch(err => {
         res.send(err);
-    })       
+    })  
 })
+
 
 app.get('/query3', (req, res) => {
 

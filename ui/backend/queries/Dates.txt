@@ -1,0 +1,15 @@
+/* this is to get the dates. Not all states will have an accident on all days, 
+    so need to make sure that all dates are accounted for. */
+
+SELECT UNIQUE TRUNC(DATE_TIME) AS ACC_DATE 
+
+FROM accident
+
+WHERE Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
+      and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
+     
+ORDER BY ACC_DATE ASC;
+
+
+https://blogs.oracle.com/sql/post/how-to-generate-days-weeks-or-months-between-two-dates-in-oracle-database
+what happens when some accidents don't have all the dates of the month --> need to get all dates of the month with this
