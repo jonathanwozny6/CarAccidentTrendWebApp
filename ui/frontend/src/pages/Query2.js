@@ -59,7 +59,7 @@ const Query2 = () => {
 				setStateUS(oldStateUS.concat("Enter a State..."));
 		}
 
-		const [data, setData] = React.useState(); //{D: "", CNT: ""}
+		const [data, setData] = React.useState();
 
 		useEffect(() => {
 			const optionsDates = {
@@ -115,17 +115,29 @@ const Query2 = () => {
 					console.error(error)
 				})
 			}
+			setStateLeg([])
+			let tempStates = []
+			
+			for (let i = 0; i < stateUS.length-1; i++)
+			{
+				tempStates.push(stateUS[i])
+			}
+			setStateLeg(tempStates)
+
+			console.log("stateUS length", stateUS.length)
+			console.log("StateUS", stateUS)
+			console.log("State Leg", stateLeg)
 			
 		}, [stateUS]);
 
 
 		// // https://codesandbox.io/s/81u1y?file=/src/App.js
-		// const getRandomColor = () => {
-		// 	return "#" + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, "0");
-		//   };
+		const getRandomColor = () => {
+			return "#" + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, "0");
+		  };
 
 		// const lines = () => {
-		// 	// const entries = data.map((option) => {
+		// 	// const entries = data2.map((option) => {
 		// 	//   const keys = Object.keys(option);
 		// 	//   return keys;
 		// 	// });
@@ -135,18 +147,34 @@ const Query2 = () => {
 		// 	// }, []);
 		// 	// const filtered = flattened.filter((key) => key !== "date");
 		// 	// const uniqueKeys = [...new Set(filtered)];
+
 		// 	let tempStates = []
-		// 	for (let i = 0; i < stateUS.length - 1; i++)
-		// 	{
+		// 	for (let i = 0; i < stateUS.length - 1; i++) {
 		// 		tempStates.push(stateUS[i])
 		// 	}
 
-		// 	setStateLeg(tempStates);
-		// 	const Lines = setStateLeg.map(function(key){
+		// 	return tempStates.map(function(key) {
 		// 	  return <Line type="monotone" stroke={getRandomColor()} dataKey={key} />;
 		// 	});
-		// 	return Lines;
 		//   };
+
+		// function lines() {
+		// 	let tempStates = {}
+		// 	for (let i = 0; i < stateUS.length - 1; i++) {
+		// 		tempStates.push(stateUS[i])
+		// 	}
+	
+		// 	return (
+		// 		tempStates.map(function(st){
+		// 			// returns Nathan, then John, then Jane
+		// 			return <Line
+		// 			dataKey={st}
+		// 			stroke="black" activeDot={{ r: 8 }}
+		// 			/>
+		// 		  })
+		// 	)
+		// }
+
 
 		
 		return (
@@ -178,14 +206,22 @@ const Query2 = () => {
 									<YAxis></YAxis>
 									<Legend />
 									<Tooltip />
-									{/* {lines()} */}
-									<Line
-
+									{
+										stateUS.slice(0,-1).map(st => {
+											return <Line
+											dataKey={`${st}`}
+											stroke={getRandomColor()} activeDot={{ r: 8 }}
+											/>
+										})
+									}
+									{/* <Line
 										dataKey={"AZ"}
 										stroke="black" activeDot={{ r: 8 }}
-									
-
 										/>
+									<Line
+									dataKey={"CA"}
+									stroke="red" activeDot={{ r: 8 }}
+									/> */}
 								</LineChart>
 							</ResponsiveContainer>
 						</div>
