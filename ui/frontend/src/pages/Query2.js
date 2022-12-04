@@ -16,8 +16,13 @@ import {
     CartesianGrid
 } from 'recharts';
 import * as scale from 'd3-scale'
+import $ from 'jquery'
 
 const Query2 = () => {
+
+		// all data
+		var myData = {}
+		var dates = {}
 
 		// number of locations on the line plot
 		const [numLocs, setNumLocs] = useState(1);
@@ -56,26 +61,95 @@ const Query2 = () => {
 		const [data, setData] = React.useState(); //{D: "", CNT: ""}
 
 		useEffect(() => {
-			// options for data request to backend
-			const options = {
+			const optionsDates = {
 				method: 'GET',
-				url: `http://localhost:8080/query2/${stateUS[0]}`, 
+				url: `http://localhost:8080/dates`, 
 				params: {sDate: startDate, eDate: endDate},
 			}
 
-			axios.request(options).then((response) => {
+			axios.request(optionsDates).then((response) => {
 				if (response.status===200) {
 					const fetchedData = response.data;
-					console.log('fetchedData', fetchedData.length);
-					setData(fetchedData)
+					console.log('Dates', fetchedData.length, fetchedData);
+					// dates = fetchedData;
+					myData = fetchedData;
 				}
-				// console.log("successfully retrieved data for query 2")
-				console.log(response.data)
 			}).catch((error) => {
 				console.error(error)
 			})
-			console.log(stateUS)
-			console.log(options)
+			console.log("hey")
+			console.log(myData)
+
+		}, [endDate])
+
+
+		useEffect(() => {
+		
+
+			for (let i = 0; i < stateUS.length - 1; i++) {
+				// options for data request to backend
+				const options = {
+					method: 'GET',
+					url: `http://localhost:8080/query2/${stateUS[i]}`, 
+					params: {sDate: startDate, eDate: endDate},
+				}
+
+				axios.request(options).then((response) => {
+					if (response.status===200) {
+						const fetchedData = response.data;
+						console.log('fetchedData', fetchedData.length);
+						setData(fetchedData)
+						console.log("Fetched", fetchedData)
+
+						// if (i == 0) {
+						// 	myData = fetchedData
+						// }
+						// else {
+						// 	for (let k = 0; k < myData.length; k++) {
+						// 		myData[k][`${stateUS[i]}`] = 0
+						// 	}
+	
+						// 	let j = 0;
+						// 	for (let k = 0; k < fetchedData.length; k++) {
+						// 		while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
+						// 			j = j + 1
+						// 			console.log(fetchedData[k]["ACC_DATE"], myData[j]["ACC_DATE"])
+						// 		}
+						// 		myData[j][`${stateUS[i]}`] = fetchedData[k][`${stateUS[i]}`]
+						// 	}
+						// }
+
+						for (let k = 0; k < myData.length; k++) {
+							myData[k][`${stateUS[i]}`] = 0
+						}
+
+						let j = 0;
+						for (let k = 0; k < fetchedData.length; k++) {
+							while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
+								j = j + 1
+								console.log(fetchedData[k]["ACC_DATE"], myData[j]["ACC_DATE"])
+							}
+							myData[j][`${stateUS[i]}`] = fetchedData[k][`${stateUS[i]}`]
+						}
+						
+						
+
+						// $.extend(true, myData, fetchedData)
+
+						
+						console.log("My Data", myData)
+						// myData = fetchedData
+						
+						// console.log("hey", myData[0]["ACC_DATE"])
+					}
+					// console.log("successfully retrieved data for query 2")
+					// console.log(response.data)
+				}).catch((error) => {
+					console.error(error)
+				})
+				console.log(options)
+			}
+			
 		}, [stateUS, startDate, endDate]);
 		
 		return (
@@ -108,7 +182,7 @@ const Query2 = () => {
 									<Legend />
 									<Tooltip />
 									<Line
-										dataKey={stateUS[0]}
+										dataKey={stateUS}
 										stroke="black" activeDot={{ r: 8 }}
 										/>
 								</LineChart>

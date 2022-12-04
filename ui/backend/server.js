@@ -157,33 +157,33 @@ app.get('/tempQuery', (req, res) => {
     })
 })
 
-// app.get('/dates', (req, res) => {
-//     // read in parameter specified in api call
-//     const d1 = req.query.sDate
-//     const d2 = req.query.eDate
+app.get('/dates', (req, res) => {
+    // read in parameter specified in api call
+    const d1 = req.query.sDate
+    const d2 = req.query.eDate
     
 
-//     // read in the sql query
-//     // const sqlQuery = fs.readFileSync('./queries/Query1.txt').toString();
-//     sqlQuery = `SELECT TRUNC(DATE_TIME) AS ACC_DATE 
+    // read in the sql query
+    // const sqlQuery = fs.readFileSync('./queries/Query1.txt').toString();
+    sqlQuery = `SELECT UNIQUE TRUNC(DATE_TIME) AS ACC_DATE 
 
-//                 FROM ACCIDENT
+                FROM ACCIDENT
                 
-//                 WHERE Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
-//                     and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
+                WHERE Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
+                    and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
                     
-//                 ORDER BY ACC_DATE ASC`
+                ORDER BY ACC_DATE ASC`
 
-//     fetchData(sqlQuery).then(dbRes => {
-//         for (let i = 0; i < dbRes.rows.length; i++) {
-//             dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
-//         }
-//         res.send(dbRes);
-//     })
-//     .catch(err => {
-//         res.send(err);
-//     })
-// })
+    fetchData(sqlQuery).then(dbRes => {
+        for (let i = 0; i < dbRes.rows.length; i++) {
+            dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
+        }
+        res.send(dbRes.rows);
+    })
+    .catch(err => {
+        res.send(err);
+    })
+})
 
 app.get('/query1', (req, res) => {
     // read in parameter specified in api call
