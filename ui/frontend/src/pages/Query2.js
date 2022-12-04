@@ -22,7 +22,7 @@ const Query2 = () => {
 
 		// all data
 		var myData = {}
-		var dates = {}
+		var stateLeg = []
 
 		// number of locations on the line plot
 		const [numLocs, setNumLocs] = useState(1);
@@ -70,22 +70,18 @@ const Query2 = () => {
 			axios.request(optionsDates).then((response) => {
 				if (response.status===200) {
 					const fetchedData = response.data;
-					console.log('Dates', fetchedData.length, fetchedData);
-					// dates = fetchedData;
+					setData(fetchedData);
 					myData = fetchedData;
+					console.log("My Data 1", myData)
 				}
 			}).catch((error) => {
 				console.error(error)
 			})
-			console.log("hey")
-			console.log(myData)
 
 		}, [endDate])
 
 
 		useEffect(() => {
-		
-
 			for (let i = 0; i < stateUS.length - 1; i++) {
 				// options for data request to backend
 				const options = {
@@ -97,9 +93,9 @@ const Query2 = () => {
 				axios.request(options).then((response) => {
 					if (response.status===200) {
 						const fetchedData = response.data;
-						console.log('fetchedData', fetchedData.length);
-						setData(fetchedData)
-						console.log("Fetched", fetchedData)
+						console.log('fetchedData', fetchedData.length, fetchedData);
+						// setData(fetchedData)
+						// console.log("Fetched", fetchedData)
 
 						// if (i == 0) {
 						// 	myData = fetchedData
@@ -118,6 +114,8 @@ const Query2 = () => {
 						// 		myData[j][`${stateUS[i]}`] = fetchedData[k][`${stateUS[i]}`]
 						// 	}
 						// }
+						myData = data
+						console.log("My Data 3", myData)
 
 						for (let k = 0; k < myData.length; k++) {
 							myData[k][`${stateUS[i]}`] = 0
@@ -131,26 +129,28 @@ const Query2 = () => {
 							}
 							myData[j][`${stateUS[i]}`] = fetchedData[k][`${stateUS[i]}`]
 						}
+
+						for (let i = 0; i < stateUS.length - 1; i++) {
+							stateLeg.concat(stateUS[i]);
+						}
 						
-						
+						console.log("State leg", stateLeg)
 
 						// $.extend(true, myData, fetchedData)
 
+						setData(myData)
 						
-						console.log("My Data", myData)
-						// myData = fetchedData
-						
-						// console.log("hey", myData[0]["ACC_DATE"])
+						console.log("My Data 4", myData)
+						// myData = fetchedData						
 					}
 					// console.log("successfully retrieved data for query 2")
 					// console.log(response.data)
 				}).catch((error) => {
 					console.error(error)
 				})
-				console.log(options)
 			}
 			
-		}, [stateUS, startDate, endDate]);
+		}, [stateUS]);
 		
 		return (
 			<div className="page-container">
@@ -182,7 +182,7 @@ const Query2 = () => {
 									<Legend />
 									<Tooltip />
 									<Line
-										dataKey={stateUS}
+										dataKey={"AZ"}
 										stroke="black" activeDot={{ r: 8 }}
 										/>
 								</LineChart>
