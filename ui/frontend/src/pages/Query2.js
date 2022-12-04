@@ -81,7 +81,11 @@ const Query2 = () => {
 
 
 		useEffect(() => {
-			for (let i = 0; i < stateUS.length - 1; i++) {
+			if (stateUS[0] != "Enter a State...") {
+
+			
+				const i = stateUS.slice(0,-1).length - 1
+
 				// options for data request to backend
 				const options = {
 					method: 'GET',
@@ -90,10 +94,12 @@ const Query2 = () => {
 				}
 
 				axios.request(options).then((response) => {
+					
 					if (response.status===200) {
 						const fetchedData = response.data;
 						console.log('fetchedData', fetchedData.length, fetchedData);
 						myData = data
+						console.log(myData)
 
 						for (let k = 0; k < myData.length; k++) {
 							myData[k][`${stateUS[i]}`] = 0
@@ -111,19 +117,11 @@ const Query2 = () => {
 						
 						console.log("My Data", myData)
 					}
+					
 				}).catch((error) => {
 					console.error(error)
 				})
 			}
-			setStateLeg([])
-			let tempStates = []
-			
-			for (let i = 0; i < stateUS.length-1; i++)
-			{
-				tempStates.push(stateUS[i])
-			}
-			setStateLeg(tempStates)
-
 			console.log("stateUS length", stateUS.length)
 			console.log("StateUS", stateUS)
 			console.log("State Leg", stateLeg)
