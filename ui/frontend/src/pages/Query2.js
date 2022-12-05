@@ -4,7 +4,6 @@ import SearchBar from '../components/SearchBar';
 import DateInput from '../components/DateInput'
 import dataStates from "../ParamData/States.json"
 import "./PagesCSS/Query2.css"
-// import TempQuery from "./TempQuery"
 import axios from "axios";
 import {
     LineChart,
@@ -16,7 +15,6 @@ import {
     CartesianGrid
 } from 'recharts';
 import * as scale from 'd3-scale'
-import $ from 'jquery'
 
 const Query2 = () => {
 
@@ -133,47 +131,6 @@ const Query2 = () => {
 		const getRandomColor = () => {
 			return "#" + ((Math.random() * 0xffffff) << 0).toString(16).padStart(6, "0");
 		  };
-
-		// const lines = () => {
-		// 	// const entries = data2.map((option) => {
-		// 	//   const keys = Object.keys(option);
-		// 	//   return keys;
-		// 	// });
-		// 	// const flattened = entries.reduce((prev, current) => {
-		// 	//   prev = prev.concat(current);
-		// 	//   return prev;
-		// 	// }, []);
-		// 	// const filtered = flattened.filter((key) => key !== "date");
-		// 	// const uniqueKeys = [...new Set(filtered)];
-
-		// 	let tempStates = []
-		// 	for (let i = 0; i < stateUS.length - 1; i++) {
-		// 		tempStates.push(stateUS[i])
-		// 	}
-
-		// 	return tempStates.map(function(key) {
-		// 	  return <Line type="monotone" stroke={getRandomColor()} dataKey={key} />;
-		// 	});
-		//   };
-
-		// function lines() {
-		// 	let tempStates = {}
-		// 	for (let i = 0; i < stateUS.length - 1; i++) {
-		// 		tempStates.push(stateUS[i])
-		// 	}
-	
-		// 	return (
-		// 		tempStates.map(function(st){
-		// 			// returns Nathan, then John, then Jane
-		// 			return <Line
-		// 			dataKey={st}
-		// 			stroke="black" activeDot={{ r: 8 }}
-		// 			/>
-		// 		  })
-		// 	)
-		// }
-
-
 		
 		return (
 			<div className="page-container">
@@ -212,14 +169,6 @@ const Query2 = () => {
 											/>
 										})
 									}
-									{/* <Line
-										dataKey={"AZ"}
-										stroke="black" activeDot={{ r: 8 }}
-										/>
-									<Line
-									dataKey={"CA"}
-									stroke="red" activeDot={{ r: 8 }}
-									/> */}
 								</LineChart>
 							</ResponsiveContainer>
 						</div>
