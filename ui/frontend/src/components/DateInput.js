@@ -47,7 +47,7 @@ function DateInput({header, placeholder, childToParent}){
                 event.target.value = restrictEntry(currInput);
             }
 
-            const minYear = '2018';
+            const minYear = '2016';
             const maxYear = '2021';
 
             for (let i = 0; i < minYear.length-1; i++)
