@@ -15,8 +15,8 @@ const { query } = require('express');
 
 // user database information
 const config = {
-    user: 'NSALAZAR1',
-    password: 'D9WT1G7Tm2v5ktieDDRUojAZ',
+    user: 'JWOZNY',
+    password: 'FHUoypE7R3vNnPFQ94SfUVir',
     connectString:'oracle.cise.ufl.edu/orcl'
   }
 
@@ -278,8 +278,8 @@ app.get('/query2/:state', (req, res) => {
 app.get('/query3/:state', (req, res) => {
 
     const st = req.params.state
-    const d1 = req.query.date1
-    const d2 = req.query.date2
+    const d1 = req.query.sDate
+    const d2 = req.query.eDate
 
     sqlQuery = `SELECT acc_date, 
                 AVG_SEV/(SELECT MAX(severity) FROM Accident) norm_avg_sev, 
