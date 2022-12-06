@@ -67,8 +67,10 @@ const Query4 = () => {
 		}
 
 		// function to pass into Search bar dropdown hour granularity to receive user input
-		const GetTimeGranularity = (selectedGran, index) => {
-				setHourGran(selectedGran)
+		const GetTimeGranularity = (event) => {
+				const index = event.target.id.slice(-1)
+				setHourGran(index)
+				console.log(hourGran)
 		}
 
 		// function to set the selected severities
@@ -77,7 +79,6 @@ const Query4 = () => {
 			const index = parseInt(event.target.id.slice(-1));
 			currSeverity[index] = !currSeverity[index];
 			setSeverity(currSeverity);
-			console.log(severity)
 		}
 
 		const [data, setData] = React.useState();
@@ -137,6 +138,7 @@ const Query4 = () => {
 						setData(myData)
 						
 						console.log("My Data", myData)
+
 					}
 					
 				}).catch((error) => {
@@ -147,7 +149,7 @@ const Query4 = () => {
 			console.log("StateUS", stateUS)
 			console.log("State Leg", stateLeg)
 			
-		}, [stateUS]);
+		}, [stateUS, hourGran]);
 
 
 		// // https://codesandbox.io/s/81u1y?file=/src/App.js
@@ -174,7 +176,23 @@ const Query4 = () => {
 										<h3 className="input-pnl-heading">Time Granularity</h3>
 										<div className="hour-granularity-selection">
 											<p>Group by every...</p>
-											<SearchBar placeholder={"\t     -----"} data={dataHours} childToParent={GetTimeGranularity} index={0}/>
+											<div className="hour-granularity-radio-container">
+												<div className="hour-granularity-radio">
+													<p>1</p>
+													<input type="radio" id="radio-1" name="time-granularity" onChange={GetTimeGranularity}/>
+												</div>
+												<div className="hour-granularity-radio">
+													<p>2</p>
+													<input type="radio" id="radio-2" name="time-granularity" onChange={GetTimeGranularity}/>
+												</div>
+												<div className="hour-granularity-radio">
+													<p>3</p>
+													<input type="radio" id="radio-3" name="time-granularity" onChange={GetTimeGranularity}/>
+												</div>
+											</div>
+											
+
+											
 											<p>...hour(s)</p>
 										</div>
 									</div>
