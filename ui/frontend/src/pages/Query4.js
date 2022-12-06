@@ -71,6 +71,16 @@ const Query4 = () => {
 				setStateUS(childSelectedState);
 		}
 
+		// function to pass into start date input to receive user input
+		const getStartDate = (startDateInput) => {
+			setStartDate(startDateInput);
+		}
+
+		// function to pass into end date input to receive user input
+		const getEndDate = (endDateInput) => {
+			setEndDate(endDateInput);
+		}
+
 		// function to pass into Search bar dropdown hour granularity to receive user input
 		const GetTimeGranularity = (event) => {
 				const index = event.target.id.slice(-1)
@@ -121,7 +131,6 @@ const Query4 = () => {
 
 
 		useEffect(() => {
-			
 			tempSevList = []
 			for (let i = 0; i < severity.length; i++) {
 				if (severity[i] === true){
@@ -133,7 +142,7 @@ const Query4 = () => {
 					const options = {
 						method: 'GET',
 						url: `http://localhost:8080/query4/${stateUS}`, 
-						params: {hr_grp: hourGran, sev: i+1},
+						params: {hr_grp: hourGran, sev: i+1, sDate: startDate, eDate: endDate},
 					}
 
 					console.log(options)
@@ -197,6 +206,8 @@ const Query4 = () => {
 															Plot Line +
 											</button>
 											</div>
+									<DateInput header="Start Date" placeholder="YYYY/MM/DD" childToParent={getStartDate}/>
+									<DateInput header="End Date" placeholder="YYYY/MM/DD" childToParent={getEndDate}/>
 									<div className="hour-granularity-selection-container"> 
 										<h3 className="input-pnl-heading">Time Granularity</h3>
 										<div className="hour-granularity-selection">
