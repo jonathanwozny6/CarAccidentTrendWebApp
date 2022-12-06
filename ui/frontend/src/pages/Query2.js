@@ -100,7 +100,7 @@ const Query2 = () => {
 						console.log(myData)
 
 						for (let k = 0; k < myData.length; k++) {
-							myData[k][`${stateUS[i]}`] = 0
+							myData[k][`${stateUS[i]}`] = null
 						}
 
 						let j = 0;
@@ -166,6 +166,7 @@ const Query2 = () => {
 											return <Line
 											dataKey={`${st}`}
 											stroke={getRandomColor()} activeDot={{ r: 8 }}
+											connectNulls
 											/>
 										})
 									}
