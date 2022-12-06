@@ -36,7 +36,7 @@ const Query3 = () => {
 
 
 	// function to pass into Search bar dropdown to get receive user input
-	const childToParent = (childSelectedState) => {
+	const childToParent = (childSelectedState, index) => {
 			let oldStateUS = stateUS;
 			oldStateUS = childSelectedState;
 			setStateUS(oldStateUS);

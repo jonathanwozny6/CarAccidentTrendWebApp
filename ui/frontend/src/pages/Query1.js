@@ -15,11 +15,14 @@ import {
     CartesianGrid
 } from 'recharts';
 import * as scale from 'd3-scale'
+// Math.import()
 
 const Query1 = () => {
 
     // all data
     var myData = {}
+
+    const [data, setData] = useState();
 
     // counts the number of times the button is clicked
     const [btnClickCnt, setBtnClickCnt] = useState(0);
@@ -86,8 +89,6 @@ const Query1 = () => {
             setBtnClickCnt(btnClickCnt+1)
     }
 
-	const [data, setData] = React.useState();
-
     useEffect(() => {
         const optionsDates = {
             method: 'GET',
@@ -108,6 +109,7 @@ const Query1 = () => {
 
 
     useEffect(() => {
+        console.log("button click", btnClickCnt)
         if (stateUS[0] != "Enter a State...") {
 
         
@@ -117,37 +119,40 @@ const Query1 = () => {
             const options = {
                 method: 'GET',
                 url: `http://localhost:8080/query1/${stateUS[i]}`, 
-                params: {sDate: startDate, eDate: endDate},
+                params: {sDate: startDate, eDate: endDate, mov_avg: maWindow},
             }
 
-            axios.request(options).then((response) => {
-                
-                if (response.status===200) {
-                    const fetchedData = response.data;
-                    console.log('fetchedData', fetchedData.length, fetchedData);
-                    myData = data
-                    console.log(myData)
+            if (btnClickCnt % 2 === 1) {
 
-                    for (let k = 0; k < myData.length; k++) {
-                        myData[k][`${stateUS[i]}`] = null
-                    }
+                axios.request(options).then((response) => {
+                    
+                    if (response.status===200) {
+                        const fetchedData = response.data;
+                        console.log('fetchedData', fetchedData.length, fetchedData);
+                        myData = data
+                        console.log("Data", data)
 
-                    let j = 0;
-                    for (let k = 0; k < fetchedData.length; k++) {
-                        while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
-                            j = j + 1
+                        for (let k = 0; k < myData.length; k++) {
+                            myData[k][`${stateUS[i]}`] = null
                         }
-                        myData[j][`${stateUS[i]}`] = fetchedData[k][`${stateUS[i]}`]
+
+                        let j = 0;
+                        for (let k = 0; k < fetchedData.length; k++) {
+                            while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
+                                j = j + 1
+                            }
+                            myData[j][`${stateUS[i]}`] = Math.round(fetchedData[k][`${stateUS[i]}`])
+                        }
+                        
+                        setData(myData)
+                        
+                        console.log("My Data", myData)
                     }
                     
-                    setData(myData)
-                    
-                    console.log("My Data", myData)
-                }
-                
-            }).catch((error) => {
-                console.error(error)
-            })
+                }).catch((error) => {
+                    console.error(error)
+                })
+            }
         }
         console.log("stateUS length", stateUS.length)
         console.log("StateUS", stateUS)
