@@ -21,13 +21,19 @@ const Query5 = () => {
   // all data
   var myData = {}
 
+  const [data, setData] = useState();
+
+  var months = []
+
+  const w_cond = ["Clear", "Snow", "Rain", "Not_Clear"]
+
   const [stateLeg, setStateLeg] = useState([]);
 
   // number of locations on the line plot
   const [numLocs, setNumLocs] = useState(1);
 
   // US State selected from Search bar dropdown
-  const [stateUS, setStateUS] = useState(["Enter a State"])
+  const [stateUS, setStateUS] = useState("Enter a State")
   // let stateUS = ["Enter a State..."]
 
   // start and end date input
@@ -38,11 +44,20 @@ const Query5 = () => {
   const [btnClickCnt, setBtnClickCnt] = useState(0);
 
   // function to pass into Search bar dropdown to get receive user input
-  const childToParent = (childSelectedState, index) => {
-      let oldStateUS = stateUS;
-      oldStateUS[index] = childSelectedState;
-      setStateUS(oldStateUS);
-  }
+  const childToParent = (childSelectedState) => {
+	setStateUS(childSelectedState);
+
+		
+	for (let i = 0; i < 12; i++) {
+		var dict = {}
+		dict['ACC_DATE'] = i+1
+		months.push(dict)
+	}
+
+	console.log("months", months)
+	setData(months)
+	console.log(data)
+}
 
   // function to pass into start date input to receive user input
   const getStartDate = (startDateInput) => {
@@ -56,81 +71,83 @@ const Query5 = () => {
 
   // function to plot line when plot button is clicked
   const PlotLine = () => {
+		let oldStateUS = stateUS
+		setStateUS(oldStateUS)
       if (btnClickCnt === Number.MAX_SAFE_INTEGER){
           setBtnClickCnt(1)
       }
       else
           setBtnClickCnt(btnClickCnt+1)
+	console.log("State 1:", stateUS)
+
+	
+
   }
 
-    const [data, setData] = React.useState();
 
     useEffect(() => {
-      const optionsDates = {
-        method: 'GET',
-        url: `http://localhost:8080/dates`, 
-        params: {sDate: startDate, eDate: endDate},
-      }
+		for (let i = 0; i < 12; i++) {
+			var dict = {}
+			dict['ACC_DATE'] = i+1
+			months.push(dict)
+		}
 
-      axios.request(optionsDates).then((response) => {
-        if (response.status===200) {
-          const fetchedData = response.data;
-          setData(fetchedData);
-        }
-      }).catch((error) => {
-        console.error(error)
-      })
-
-    }, [endDate])
+		console.log("months", months)
+		setData(months)
+		console.log(data)
+    }, [stateUS])
 
 
     useEffect(() => {
-      if (stateUS[0] != "Enter a State...") {
+		for (let i = 0; i < w_cond.length; i++) {
+		
+			if (stateUS[0] != "Enter a State...") {
+		
+				// options for data request to backend
+				const options = {
+				method: 'GET',
+				url: `http://localhost:8080/query5/${stateUS}`, 
+				params: {sDate: startDate, eDate: endDate, w_cond: w_cond[i]},
+				}
 
-      
-        const i = stateUS.slice(0,-1).length - 1
-
-        // options for data request to backend
-        const options = {
-          method: 'GET',
-          url: `http://localhost:8080/query5/${stateUS[i]}`, 
-          params: {sDate: startDate, eDate: endDate},
-        }
-
-        axios.request(options).then((response) => {
-          
-          if (response.status===200) {
-            const fetchedData = response.data;
-            console.log('fetchedData', fetchedData.length, fetchedData);
-            myData = data
-            console.log(myData)
-
-            for (let k = 0; k < myData.length; k++) {
-              myData[k][`${stateUS[i]}`] = null
-            }
-
-            let j = 0;
-            for (let k = 0; k < fetchedData.length; k++) {
-              while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
-                j = j + 1
-              }
-              myData[j][`${stateUS[i]}`] = fetchedData[k][`${stateUS[i]}`]
-            }
-            
-            setData(myData)
-            
-            console.log("My Data", myData)
-          }
-          
-        }).catch((error) => {
-          console.error(error)
-        })
-      }
-      console.log("stateUS length", stateUS.length)
+				if (btnClickCnt % 2 == 0) {
+					axios.request(options).then((response) => {
+					
+					if (response.status===200) {
+						const fetchedData = response.data;
+						console.log('fetchedData', fetchedData.length, fetchedData);
+						myData = data
+			
+						for (let k = 0; k < myData.length; k++) {
+						myData[k][`${w_cond[i]}`] = null
+						}
+			
+						let j = 0;
+						for (let k = 0; k < fetchedData.length; k++) {
+						while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
+							j = j + 1
+							console.log("fetched index: ", fetchedData[k]["ACC_DATE"], "my Date ind", myData[j]["ACC_DATE"])
+						}
+						console.log("my date equals: ", myData[j][`${w_cond[i]}`], "fetched data equals: ", fetchedData[k][`${w_cond[i]}`]  )
+						myData[j][`${w_cond[i]}`] = fetchedData[k][`NORM_CNT`]
+						}
+						
+						setData(myData)
+						
+						console.log("My Data", myData)
+					}
+					
+					}).catch((error) => {
+					console.error(error)
+					})
+				}
+      		}
+		}
+    //   console.log("stateUS length", stateUS.length)
       console.log("StateUS", stateUS)
       console.log("State Leg", stateLeg)
       
-    }, [stateUS]);
+    }, [btnClickCnt]);
 
 
     // // https://codesandbox.io/s/81u1y?file=/src/App.js
@@ -146,11 +163,7 @@ const Query5 = () => {
                 <div className="input-location-section">
                     <h3 className='input-pnl-heading'>Location</h3>
                     <div className="dropdown">
-                        {
-                          stateUS.map((state, index) => {
-                              return <SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={index}/>
-                          })
-                        }
+						<SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={0}/>
                     </div>
                 </div>
                 <DateInput header="Start Date" placeholder="YYYY/MM/DD" childToParent={getStartDate}/>
@@ -169,15 +182,31 @@ const Query5 = () => {
                   <YAxis></YAxis>
                   <Legend />
                   <Tooltip />
-                  {
-                    stateUS.slice(0,-1).map(st => {
-                      return <Line
-                      dataKey={`${st}`}
-                      stroke={getRandomColor()} activeDot={{ r: 8 }}
-                      connectNulls
-                      />
-                    })
-                  }
+					<Line
+						 
+						dataKey="Clear"
+						stroke={"#1f77b4"} 
+						activeDot={{ r: 8 }}
+						connectNulls
+					/>
+					<Line
+						dataKey={"Rain"}
+						stroke={"#ff7f0e"} 
+						activeDot={{ r: 8 }}
+						connectNulls
+					/>
+					<Line
+						dataKey={"Snow"}
+						stroke={"#2ca02c"} 
+						activeDot={{ r: 8 }}
+						connectNulls
+					/>
+					<Line
+						dataKey={"Not_Clear"}
+						stroke={"#8884d8"} 
+						activeDot={{ r: 8 }}
+						connectNulls
+					/>
                 </LineChart>
               </ResponsiveContainer>
             </div>
