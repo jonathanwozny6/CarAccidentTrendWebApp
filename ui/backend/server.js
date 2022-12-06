@@ -15,8 +15,8 @@ const { query } = require('express');
 
 // user database information
 const config = {
-    user: 'JWOZNY',
-    password: 'FHUoypE7R3vNnPFQ94SfUVir',
+    user: 'NSALAZAR1',
+    password: 'D9WT1G7Tm2v5ktieDDRUojAZ',
     connectString:'oracle.cise.ufl.edu/orcl'
   }
 
