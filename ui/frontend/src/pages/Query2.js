@@ -1,6 +1,7 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import SearchBar from '../components/SearchBar';
+import SimpleDropdown from '../components/SimpleDropdown'
 import DateInput from '../components/DateInput'
 import dataStates from "../ParamData/States.json"
 import "./PagesCSS/Query2.css"
@@ -30,16 +31,22 @@ const Query2 = () => {
 	const [stateUS, setStateUS] = useState([])
 	// let stateUS = ["Enter a State..."]
 
+	// road type: highway or non-highway
+	const [roadType, setRoadType] = useState("");
+
+	// severity: 1, 2, 3, 4
+	const [severity, setSeverity] = useState("0");
+
 	// start and end date input
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
 
-		// function to pass into Search bar dropdown to get receive user input
-		const childToParent = (childSelectedState, index) => {
-				let oldStateUS = stateUS;
-				oldStateUS[index] = childSelectedState;
-				setStateUS(oldStateUS);
-		}
+	// function to pass into Search bar dropdown to get receive user input
+	const childToParent = (childSelectedState, index) => {
+			let oldStateUS = stateUS;
+			oldStateUS[index] = childSelectedState;
+			setStateUS(oldStateUS);
+	}
 
 	// function to pass into start date input to receive user input
 	const getStartDate = (startDateInput) => {
@@ -51,11 +58,22 @@ const Query2 = () => {
 			setEndDate(endDateInput);
 	}
 
+	// function to get the road type (highway or non-highway)
+	const GetRoadType = (event) => {
+			setRoadType(event.target.id.slice(-1))
+	}
+
+	// function to get severity
+	const GetSeverity = (event) => {
+			setSeverity(event.target.id.slice(-1));
+			console.log(severity)
+	}
+
 	// function to add line when "Add Line" button is clicked
 	const addLineClicked = () => {
 			let oldStateUS = stateUS
 			setStateUS(oldStateUS.concat("Enter a State..."));
-	}
+	} 
 
 		const [data, setData] = React.useState();
 
@@ -134,9 +152,47 @@ const Query2 = () => {
 		
 		return (
 			<div className="page-container">
+					<h1>Average Accident Frequency by Region and Time Period</h1> 
+          <div className="display-container">
 						<div className="input-pnl">
+								<div id="road-type-section" className="section">
+									<h3>Road Type</h3>
+									<div className="radio-container">
+												<div className="radio">
+													<p>Hwy</p>
+													<input type="radio" id="road-type-1" name="road-type" onChange={GetRoadType}/>
+												</div>
+												<div className="radio">
+													<p>Non-Hwy</p>
+													<input type="radio" id="road-type-0" name="road-type" onChange={GetRoadType}/>
+												</div>
+										</div>
+								</div>
+								<div id="severity-section" className="section">
+									<h3>Severity</h3>
+									<div className="radio-container">
+											<div className="radio">
+												<p>1</p>
+												<input type="radio" id="radio-1" name="severity" onChange={GetSeverity}/>
+											</div>
+											<div className="radio">
+												<p>2</p>
+												<input type="radio" id="radio-2" name="severity" onChange={GetSeverity}/>
+											</div>
+											<div className="radio">
+												<p>3</p>
+												<input type="radio" id="radio-3" name="severity" onChange={GetSeverity}/>
+											</div>
+											<div className="radio">
+												<p>4</p>
+												<input type="radio" id="radio-4" name="severity" onChange={GetSeverity}/>
+											</div>
+										</div>
+									</div>
 								<div className="input-location-section">
 										<h3 className='input-pnl-heading'>Location</h3>
+										<SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={0}/>
+										{/* <SimpleDropdown placeholder={"Road Type..."} data={dataStates} childToParent={GetRoadType}/> */}
 										<div className="dropdown">
 												{
 													stateUS.map((state, index) => {
@@ -173,7 +229,8 @@ const Query2 = () => {
 								</LineChart>
 							</ResponsiveContainer>
 						</div>
-				</div>
+					</div>
+			</div>
 		);
 };
 
