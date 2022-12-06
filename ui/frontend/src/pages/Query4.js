@@ -41,9 +41,12 @@ const Query4 = () => {
 		// all data
 		var myData = {}
 		var tempSevList = []
+		var groups = []
+		const plotColors = ["#1f77b4", "#ff7f0e", "#2ca02c", "#8884d8"]
+
 		const [sevLeg, setSevLeg] = useState([])
 
-		const [data, setData] = useState();
+		const [data, setData] = useState([]);
 
 		const [btnClickCnt, setBtnClickCnt] = useState(0);
 
@@ -73,6 +76,16 @@ const Query4 = () => {
 				const index = event.target.id.slice(-1)
 				setHourGran(index)
 				console.log("Hour Gran", hourGran)
+
+				for (let i = 0; i < 24/parseInt(hourGran); i++) {
+					var dict = {}
+					dict['TIME_BIN'] = i
+					groups.push(dict)
+				}
+	
+				console.log("groups", groups)
+				setData(groups)
+				console.log(data)
 		}
 
 		// function to set the selected severities
@@ -92,9 +105,8 @@ const Query4 = () => {
 			console.log("stateUS", stateUS)
 		} 
 
-
 		useEffect(() => {
-			var groups = []
+			
 			for (let i = 0; i < 24/parseInt(hourGran); i++) {
 				var dict = {}
 				dict['TIME_BIN'] = i
@@ -102,12 +114,16 @@ const Query4 = () => {
 			}
 
 			console.log("groups", groups)
-
 			setData(groups)
-			console.log("Data", data)
+			console.log(data)
+	
+		}, [hourGran])
+
+
+		useEffect(() => {
+			
 			tempSevList = []
 			for (let i = 0; i < severity.length; i++) {
-				
 				if (severity[i] === true){
 					tempSevList.push(i+1)
 					setSevLeg(tempSevList)
@@ -121,38 +137,39 @@ const Query4 = () => {
 					}
 
 					console.log(options)
+					if (btnClickCnt % 2 == 1) {
 
-					axios.request(options).then((response) => {
-						
-						if (response.status===200) {
-							const fetchedData = response.data;
-							console.log("severity", i+1)
-							console.log('fetchedData', fetchedData.length, fetchedData);
+						axios.request(options).then((response) => {
 							
-							console.log("Data", data)
-							myData = data
-							console.log("My data", myData)
+							if (response.status===200) {
+								const fetchedData = response.data;
+								console.log("severity", i+1)
+								console.log('fetchedData', fetchedData.length, fetchedData);
+								
+								console.log("Data", data)
+								myData = data
+								console.log("My data", myData)
 
-							for (let k = 0; k < myData.length; k++) {
-								myData[k][`${i+1}`] = null
-							}
-							
-							let j = 0;
-							for (let k = 0; k < fetchedData.length; k++) {
-								while (j < myData.length && fetchedData[k]["TIME_BIN"] != myData[j]["TIME_BIN"]) {
-									j = j + 1
+								for (let k = 0; k < myData.length; k++) {
+									myData[k][`${i+1}`] = null
 								}
-								myData[j][`${i+1}`] = fetchedData[k][`CNT`]
+								
+								let j = 0;
+								for (let k = 0; k < fetchedData.length; k++) {
+									while (j < myData.length && fetchedData[k]["TIME_BIN"] != myData[j]["TIME_BIN"]) {
+										j = j + 1
+									}
+									myData[j][`${i+1}`] = fetchedData[k][`CNT`]
+								}
+								
+								setData(myData)
+								// setData(fetchedData)
+								// console.log("My Data", myData)
 							}
-							
-							setData(myData)
-							// setData(fetchedData)
-							// console.log("My Data", myData)
-
-						}
-					}).catch((error) => {
-						console.error(error)
-					})
+						}).catch((error) => {
+							console.error(error)
+						})
+					}
 				}
 			}
 
@@ -232,10 +249,10 @@ const Query4 = () => {
 										<Legend />
 										<Tooltip />
 										{
-											sevLeg.map(i => {
+											sevLeg.map(t => {
 													return <Line
-													dataKey={`${i}`}
-													stroke={getRandomColor()} 
+													dataKey={`${t}`}
+													stroke={`${plotColors[t]}`} 
 													activeDot={{ r: 8 }}
 													connectNulls
 													/>
@@ -243,8 +260,27 @@ const Query4 = () => {
 										}
 										{/* <Line
 											
-											dataKey="CNT"
-											stroke={getRandomColor()} 
+											dataKey="1"
+											stroke={"red"} 
+											activeDot={{ r: 8 }}
+											connectNulls
+										/> */}
+										{/* <Line
+											dataKey={"2"}
+											stroke={"black"} 
+											activeDot={{ r: 8 }}
+											connectNulls
+										/>
+										
+										<Line
+											dataKey={"3"}
+											stroke={"blue"} 
+											activeDot={{ r: 8 }}
+											connectNulls
+										/> */}
+										{/* <Line
+											dataKey={"4"}
+											stroke={"green"} 
 											activeDot={{ r: 8 }}
 											connectNulls
 										/> */}
