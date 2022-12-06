@@ -243,11 +243,13 @@ app.get('/query2/:state', (req, res) => {
     const st = req.params.state
     const d1 = req.query.sDate
     const d2 = req.query.eDate
+    const r_tp = req.query.rType
+    const sev = req.query.sev
 
     sqlQuery = 
             `SELECT TRUNC(Date_Time) as acc_date,
                         AVG(COUNT(*)) OVER 
-                        (ORDER BY TRUNC(Date_Time) ROWS BETWEEN 10 PRECEDING AND CURRENT ROW) AS ${st}
+                        (ORDER BY TRUNC(Date_Time) ROWS BETWEEN 10 PRECEDING AND CURRENT ROW) AS CNT
                                 
                         FROM Accident, Road, Location
                         
@@ -255,24 +257,12 @@ app.get('/query2/:state', (req, res) => {
                             and state = '${st}' 
                             and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
                             and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
+                            and highway = ${r_tp}
+                            and severity = ${sev}
                         
                         GROUP BY TRUNC(Date_Time)
                 
                         ORDER BY acc_date ASC`  
-
-                // `SELECT TRUNC(Date_Time) as acc_date,
-                //                 count(*) AS ${st}
-                                
-                //         FROM Accident, Road, Location
-                        
-                //         where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-                //             and state = '${st}' 
-                //             and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
-                //             and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
-                        
-                //         GROUP BY TRUNC(Date_Time)
-                
-                //         ORDER BY acc_date ASC`  
 
     fetchData(sqlQuery).then(dbRes => {
         // remove zulu time on datetimes returned from sql query
