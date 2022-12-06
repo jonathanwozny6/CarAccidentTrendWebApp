@@ -113,7 +113,7 @@ const Query5 = () => {
 						myData = data
 			
 						for (let k = 0; k < myData.length; k++) {
-						myData[k][`${w_cond[i]}`] = 0
+							myData[k][`${w_cond[i]}`] = 0
 						}
 			
 						let j = 0;

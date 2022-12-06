@@ -29,11 +29,14 @@ const Query2 = () => {
 	const [numLocs, setNumLocs] = useState(1);
 
 	// US State selected from Search bar dropdown
-	const [stateUS, setStateUS] = useState([])
+	const [stateUS, setStateUS] = useState()
 	// let stateUS = ["Enter a State..."]
 
 	// road type: highway or non-highway
-	const [roadType, setRoadType] = useState("");
+	const [roadType, setRoadType] = useState(["Highway", "Street"])
+
+	// road val: 1 or 0
+	const [roadVal, setRoadVal] = useState([1,0])
 
 	// severity: 1, 2, 3, 4
 	const [severity, setSeverity] = useState("0");
@@ -46,10 +49,8 @@ const Query2 = () => {
 	const [btnClickCnt, setBtnClickCnt] = useState(0);
 
 	// function to pass into Search bar dropdown to get receive user input
-	const childToParent = (childSelectedState, index) => {
-			let oldStateUS = stateUS;
-			oldStateUS[index] = childSelectedState;
-			setStateUS(oldStateUS);
+	const childToParent = (childSelectedState) => {
+			setStateUS(childSelectedState);
 	}
 
 	// function to pass into start date input to receive user input
@@ -76,7 +77,7 @@ const Query2 = () => {
 	// function to add line when "Add Line" button is clicked
 	const addLineClicked = () => {
 			let oldStateUS = stateUS
-			setStateUS(oldStateUS.concat("Enter a State..."));
+			setStateUS(oldStateUS);
 	} 
 
 	// function to plot line when plot button is clicked
@@ -111,17 +112,15 @@ const Query2 = () => {
 	}, [endDate])
 
 
-		useEffect(() => {
-			if (stateUS[0] != "Enter a State...") {
-
-			
-				const i = stateUS.slice(0,-1).length - 1
+	useEffect(() => {
+		for (let i = 0; i < roadType.length; i++) {
+			if (btnClickCnt % 2 == 1) {
 
 				// options for data request to backend
 				const options = {
 					method: 'GET',
-					url: `http://localhost:8080/query2/${stateUS[i]}`, 
-					params: {sDate: startDate, eDate: endDate},
+					url: `http://localhost:8080/query2/${stateUS}`, 
+					params: {sDate: startDate, eDate: endDate, rType: roadVal[i], sev: severity},
 				}
 
 				axios.request(options).then((response) => {
@@ -130,10 +129,11 @@ const Query2 = () => {
 						const fetchedData = response.data;
 						console.log('fetchedData', fetchedData.length, fetchedData);
 						myData = data
-						console.log(myData)
+						console.log("My Data", myData)
+						setData(fetchedData)
 
 						for (let k = 0; k < myData.length; k++) {
-							myData[k][`${stateUS[i]}`] = null
+							myData[k][`${roadType[i]}`] = null
 						}
 
 						let j = 0;
@@ -141,7 +141,7 @@ const Query2 = () => {
 							while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
 								j = j + 1
 							}
-							myData[j][`${stateUS[i]}`] = fetchedData[k][`${stateUS[i]}`]
+							myData[j][`${roadType[i]}`] = fetchedData[k][`CNT`]
 						}
 						
 						setData(myData)
@@ -153,11 +153,11 @@ const Query2 = () => {
 					console.error(error)
 				})
 			}
-			console.log("stateUS length", stateUS.length)
-			console.log("StateUS", stateUS)
-			console.log("State Leg", stateLeg)
-			
-		}, [btnClickCnt]);
+		}
+		console.log("StateUS", stateUS)
+		console.log("State Leg", stateLeg)
+		
+	}, [btnClickCnt]);
 
 
 		// // https://codesandbox.io/s/81u1y?file=/src/App.js
@@ -167,22 +167,9 @@ const Query2 = () => {
 		
 		return (
 			<div className="page-container">
-					<h1>Average Accident Frequency by Region and Time Period</h1> 
+					<h1> Accident Frequency by Street Type and Severity</h1> 
           <div className="display-container">
 						<div className="input-pnl">
-								<div id="road-type-section" className="section">
-									<h3>Road Type</h3>
-									<div className="radio-container">
-												<div className="radio">
-													<p>Hwy</p>
-													<input type="radio" id="road-type-1" name="road-type" onChange={GetRoadType}/>
-												</div>
-												<div className="radio">
-													<p>Non-Hwy</p>
-													<input type="radio" id="road-type-0" name="road-type" onChange={GetRoadType}/>
-												</div>
-										</div>
-								</div>
 								<div id="severity-section" className="section">
 									<h3>Severity</h3>
 									<div className="radio-container">
@@ -206,14 +193,8 @@ const Query2 = () => {
 									</div>
 								<div className="input-location-section">
 										<h3 className='input-pnl-heading'>Location</h3>
-										<SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={0}/>
-										{/* <SimpleDropdown placeholder={"Road Type..."} data={dataStates} childToParent={GetRoadType}/> */}
 										<div className="dropdown">
-												{
-													stateUS.map((state, index) => {
-															return <SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={index}/>
-													})
-												}
+											<SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={0}/>
 										</div>
 										<button className="add-curve-btn" onClick={addLineClicked}>
 												Add Line +
@@ -235,15 +216,17 @@ const Query2 = () => {
 									<YAxis></YAxis>
 									<Legend />
 									<Tooltip />
-									{
-										stateUS.slice(0,-1).map(st => {
-											return <Line
-											dataKey={`${st}`}
-											stroke={getRandomColor()} activeDot={{ r: 8 }}
+									{/* #1f77b4", "#ff7f0e", "#2ca02c", "#8884d8 */}
+									<Line
+											dataKey={`${roadType[0]}`}
+											stroke={"#1f77b4"} activeDot={{ r: 8 }}
 											connectNulls
-											/>
-										})
-									}
+									/>
+									<Line
+											dataKey={`${roadType[1]}`}
+											stroke={"#ff7f0e"} activeDot={{ r: 8 }}
+											connectNulls
+									/>
 								</LineChart>
 							</ResponsiveContainer>
 						</div>
