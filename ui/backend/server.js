@@ -294,8 +294,8 @@ app.get('/query3/:state', (req, res) => {
 
                 where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
                 and env_id = fk_env_id and state = '${st}' 
-                and Date_Time >= TO_DATE('${dt1}', 'YYYY/MM/DD') 
-                and Date_Time < TO_DATE('${dt2}', 'YYYY/MM/DD')
+                and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
+                and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
 
                 GROUP BY TRUNC(Date_Time)
                     
