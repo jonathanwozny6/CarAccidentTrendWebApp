@@ -113,7 +113,7 @@ const Query5 = () => {
 						myData = data
 			
 						for (let k = 0; k < myData.length; k++) {
-						myData[k][`${w_cond[i]}`] = null
+							myData[k][`${w_cond[i]}`] = 0
 						}
 			
 						let j = 0;
@@ -210,25 +210,25 @@ const Query5 = () => {
 						dataKey="Clear"
 						stroke={"#1f77b4"} 
 						activeDot={{ r: 8 }}
-						connectNulls
+						
 					/>
 					<Line
 						dataKey={"Rain"}
 						stroke={"#ff7f0e"} 
 						activeDot={{ r: 8 }}
-						connectNulls
+						
 					/>
 					<Line
 						dataKey={"Snow"}
 						stroke={"#2ca02c"} 
 						activeDot={{ r: 8 }}
-						connectNulls
+						
 					/>
 					<Line
 						dataKey={"Not_Clear"}
 						stroke={"#8884d8"} 
 						activeDot={{ r: 8 }}
-						connectNulls
+						
 					/>
                 </LineChart>
               </ResponsiveContainer>
