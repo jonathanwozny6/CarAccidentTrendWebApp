@@ -22,12 +22,6 @@ const Navbar = () => {
           <NavLink to="/Query5" activeStyle>
             Query5
           </NavLink>
-          <NavLink to="/LocationList" activeStyle>
-            LocationList
-          </NavLink>
-          <NavLink to="/TempQuery" activeStyle>
-            TempQuery
-          </NavLink>
         </NavMenu>
       </Nav>
     </>
