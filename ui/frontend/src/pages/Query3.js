@@ -24,7 +24,9 @@ const Query3 = () => {
 	//const [numLocs, setNumLocs] = useState(1);
 
 	// US State selected from Search bar dropdown
-	const [stateUS, setStateUS] = useState([""]);
+	const [stateUS, setStateUS] = useState();
+
+	const [btnClickCnt, setBtnClickCnt] = useState(0);
 
 	const [renderTrigger, setRender] = useState(true)
 
@@ -34,9 +36,9 @@ const Query3 = () => {
 
 
 	// function to pass into Search bar dropdown to get receive user input
-	const childToParent = (childSelectedState, index) => {
+	const childToParent = (childSelectedState) => {
 			let oldStateUS = stateUS;
-			oldStateUS[index] = childSelectedState;
+			oldStateUS = childSelectedState;
 			setStateUS(oldStateUS);
 	}
 
@@ -50,24 +52,23 @@ const Query3 = () => {
 			setEndDate(endDateInput);
 	}
 
-	const PlotLines = () => {
-		setRender(!renderTrigger)
-	}
-
 	// function to add line when "Add Line" button is clicked
 	const addLineClicked = () => {
 			let oldStateUS = stateUS
-			setStateUS(oldStateUS.concat("Enter a State..."));
+			setStateUS(oldStateUS)
+			setBtnClickCnt(btnClickCnt + 1)
+			console.log("btn clicks", btnClickCnt)
+			console.log("stateUS", stateUS)
 	} 
 
 	const [data, setData] = React.useState(); //{D: "", NORM_AVG_SEV: "", NORM_AVG_VIS: ""}
 
 	useEffect(() => {
-		console.log(stateUS[0])
+		console.log(stateUS)
 		// options for data request to backend
 		const options = {
 			method: 'GET',
-			url: `http://localhost:8080/query3/${stateUS[0]}`, 
+			url: `http://localhost:8080/query3/${stateUS}`, 
 			params: {sDate: startDate, eDate: endDate},
 		}
 
@@ -84,7 +85,7 @@ const Query3 = () => {
 		})
 		console.log(stateUS)
 		console.log(options)
-	}, [stateUS]);
+	}, [btnClickCnt]);
 	
 	return (
 		<div className="page-container">
@@ -94,21 +95,16 @@ const Query3 = () => {
 						<div className="input-location-section">
 								<h3 className='input-pnl-heading'>Location</h3>
 								<div className="dropdown">
-										{
-											stateUS.map((state, index) => {
-													return <SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={index}/>
-											})
-										}
+								
+								<SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={0}/>
+								
 								</div>
-								<button className="add-curve-btn" onClick={addLineClicked}>
-												Add Line +
+								<button onClick={addLineClicked}>
+												Plot Line +
 								</button>
 						</div>
 						<DateInput header="Start Date" placeholder="YYYY/MM/DD" childToParent={getStartDate}/>
 						<DateInput header="End Date" placeholder="YYYY/MM/DD" childToParent={getEndDate}/>
-						<button onClick={PlotLines}>
-							Plot
-						</button>
 				</div>
 				<div className="lineplot">
 					<h1 className="text-heading">
@@ -119,7 +115,7 @@ const Query3 = () => {
 							<XAxis dataKey="ACC_DATE" numberOfTicks={6} />
 							{/* <YAxis></YAxis> */}
 							<YAxis
-								// yAxisId="left-axis"
+								yAxisId="left-axis"
 								orientation="left"
 								tickCount={1}
 								domain={[0, 1]}
@@ -127,7 +123,7 @@ const Query3 = () => {
 									<Label value='Severity' offset={2} angle="-90" />
 								</YAxis>
 							<YAxis
-								// yAxisId="right-axis"
+								yAxisId="right-axis"
 								orientation="right"
 								tickCount={1}
 								tick
@@ -138,11 +134,13 @@ const Query3 = () => {
 							<Legend />
 							<Tooltip />
 							<Line
+								yAxisId="left-axis"
 								name="Average Severity"
 								dataKey="NORM_AVG_SEV"
 								stroke="black" activeDot={{ r: 8 }}
 								/>
 							<Line
+								yAxisId="right-axis"
 								name="Average Visibilty"
 								dataKey="NORM_AVG_VIS"
 								stroke="blue" activeDot={{ r: 8 }}
