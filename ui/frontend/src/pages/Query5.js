@@ -22,116 +22,125 @@ const Query5 = () => {
   // all data
   var myData = {}
 
+  const [data, setData] = useState();
+
+  var months = []
+
+  const w_cond = ["Clear", "Snow", "Rain", "Not_Clear"]
+
   const [stateLeg, setStateLeg] = useState([]);
 
-  // number of locations on the line plot
-  const [numLocs, setNumLocs] = useState(1);
-
   // US State selected from Search bar dropdown
-  const [stateUS, setStateUS] = useState(["Enter a State"])
+  const [stateUS, setStateUS] = useState("Enter a State")
   // let stateUS = ["Enter a State..."]
 
   // start and end date input
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+//   const [startDate, setStartDate] = useState("");
+//   const [endDate, setEndDate] = useState("");
+
+  // year to look at
+  const [yr, setYr] = useState("")
 
   // button to plot line
   const [btnClickCnt, setBtnClickCnt] = useState(0);
 
   // function to pass into Search bar dropdown to get receive user input
-  const childToParent = (childSelectedState, index) => {
-      let oldStateUS = stateUS;
-      oldStateUS[index] = childSelectedState;
-      setStateUS(oldStateUS);
-  }
+  const childToParent = (childSelectedState) => {
+	setStateUS(childSelectedState);
 
-  // function to pass into start date input to receive user input
-  const getStartDate = (startDateInput) => {
-      setStartDate(startDateInput);
-  }
+	// for (let i = 0; i < 12; i++) {
+	// 	var dict = {}
+	// 	dict['ACC_DATE'] = i+1
+	// 	months.push(dict)
+	// }
 
-  // function to pass into end date input to receive user input
-  const getEndDate = (endDateInput) => {
-      setEndDate(endDateInput);
-  }
+	console.log("ctP months", months)
+	setData(months)
+	console.log("ctp init data", data)
+}
+
+  // function to pass into Search bar dropdown hour granularity to receive user input
+  const GetTimeGranularity = (event) => {
+	const index = event.target.id
+	setYr("20" + index)
+	console.log("Year", yr)
+}
 
   // function to plot line when plot button is clicked
   const PlotLine = () => {
+		let oldStateUS = stateUS
+		setStateUS(oldStateUS)
       if (btnClickCnt === Number.MAX_SAFE_INTEGER){
           setBtnClickCnt(1)
       }
       else
           setBtnClickCnt(btnClickCnt+1)
+	console.log("State 1:", stateUS)
   }
 
-    const [data, setData] = React.useState();
 
     useEffect(() => {
-      const optionsDates = {
-        method: 'GET',
-        url: `http://localhost:8080/dates`, 
-        params: {sDate: startDate, eDate: endDate},
-      }
+		for (let i = 0; i < 12; i++) {
+			var dict = {}
+			dict['ACC_DATE'] = i+1
+			months.push(dict)
+		}
 
-      axios.request(optionsDates).then((response) => {
-        if (response.status===200) {
-          const fetchedData = response.data;
-          setData(fetchedData);
-        }
-      }).catch((error) => {
-        console.error(error)
-      })
-
-    }, [endDate])
+		console.log("Use effect months", months)
+		setData(months)
+		console.log("Use effect Initialized data", data)
+    }, [stateUS])
 
 
     useEffect(() => {
-      if (stateUS[0] != "Enter a State...") {
+		console.log("btn click", btnClickCnt)
+		for (let i = 0; i < w_cond.length; i++) {
+		
+			if (stateUS[0] != "Enter a State...") {
+		
+				// options for data request to backend
+				const options = {
+				method: 'GET',
+				url: `http://localhost:8080/query5/${stateUS}`, 
+				params: {yr: yr, w_cond: w_cond[i]},
+				}
 
-      
-        const i = stateUS.slice(0,-1).length - 1
-
-        // options for data request to backend
-        const options = {
-          method: 'GET',
-          url: `http://localhost:8080/query5/${stateUS[i]}`, 
-          params: {sDate: startDate, eDate: endDate},
-        }
-
-        axios.request(options).then((response) => {
-          
-          if (response.status===200) {
-            const fetchedData = response.data;
-            console.log('fetchedData', fetchedData.length, fetchedData);
-            myData = data
-            console.log(myData)
-
-            for (let k = 0; k < myData.length; k++) {
-              myData[k][`${stateUS[i]}`] = null
-            }
-
-            let j = 0;
-            for (let k = 0; k < fetchedData.length; k++) {
-              while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
-                j = j + 1
-              }
-              myData[j][`${stateUS[i]}`] = fetchedData[k][`${stateUS[i]}`]
-            }
-            
-            setData(myData)
-            
-            console.log("My Data", myData)
-          }
-          
-        }).catch((error) => {
-          console.error(error)
-        })
-      }
-      console.log("stateUS length", stateUS.length)
+				if (btnClickCnt % 2 == 1 & btnClickCnt !== 0) {
+					axios.request(options).then((response) => {
+					
+					if (response.status===200) {
+						const fetchedData = response.data;
+						console.log('fetchedData', fetchedData.length, fetchedData);
+						myData = data
+			
+						for (let k = 0; k < myData.length; k++) {
+						myData[k][`${w_cond[i]}`] = null
+						}
+			
+						let j = 0;
+						for (let k = 0; k < fetchedData.length; k++) {
+						while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
+							j = j + 1
+						}
+						myData[j][`${w_cond[i]}`] = fetchedData[k][`NORM_CNT`]
+						}
+						
+						setData(myData)
+						
+						console.log("My Data", myData)
+					}
+					
+					}).catch((error) => {
+					console.error(error)
+					})
+				}
+      		}
+		}
+    //   console.log("stateUS length", stateUS.length)
       console.log("StateUS", stateUS)
       console.log("State Leg", stateLeg)
       
-    }, [stateUS]);
+    }, [btnClickCnt]);
 
 
     // // https://codesandbox.io/s/81u1y?file=/src/App.js
@@ -147,17 +156,44 @@ const Query5 = () => {
                 <div className="input-location-section">
                     <h3 className='input-pnl-heading'>Location</h3>
                     <div className="dropdown">
-                        {
-                          stateUS.map((state, index) => {
-                              return <SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={index}/>
-                          })
-                        }
+						<SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={0}/>
                     </div>
                 </div>
-                <DateInput header="Start Date" placeholder="YYYY/MM/DD" childToParent={getStartDate}/>
-                <DateInput header="End Date" placeholder="YYYY/MM/DD" childToParent={getEndDate}/>
-                <div className="center">
-                  <button id="plot-btn" onClick={PlotLine}><h3>P L O T !</h3></button>
+                {/* <DateInput header="Start Date" placeholder="YYYY/MM/DD" childToParent={getStartDate}/>
+                <DateInput header="End Date" placeholder="YYYY/MM/DD" childToParent={getEndDate}/> */}
+                <div className="hour-granularity-selection-container"> 
+										<h3 className="input-pnl-heading">Year</h3>
+										<div className="hour-granularity-selection">
+											<div className="hour-granularity-input-container">
+											<div className="hour-granularity-radio">
+													<p>16</p>
+													<input type="radio" id="16" name="time-granularity" onChange={GetTimeGranularity}/>
+												</div>
+												<div className="hour-granularity-radio">
+													<p>17</p>
+													<input type="radio" id="17" name="time-granularity" onChange={GetTimeGranularity}/>
+												</div>
+												<div className="hour-granularity-radio">
+													<p>18</p>
+													<input type="radio" id="18" name="time-granularity" onChange={GetTimeGranularity}/>
+												</div>
+												<div className="hour-granularity-radio">
+													<p>19</p>
+													<input type="radio" id="19" name="time-granularity" onChange={GetTimeGranularity}/>
+												</div>
+												<div className="hour-granularity-radio">
+													<p>20</p>
+													<input type="radio" id="20" name="time-granularity" onChange={GetTimeGranularity}/>
+												</div>
+												<div className="hour-granularity-radio">
+													<p>21</p>
+													<input type="radio" id="21" name="time-granularity" onChange={GetTimeGranularity}/>
+												</div>
+											</div>
+										</div>
+									</div>
+				<div className="center">
+                  <button id="plot-btn" onClick={PlotLine}><h3>Plot Line</h3></button>
                 </div>
             </div>
             <div className="lineplot">
@@ -175,15 +211,31 @@ const Query5 = () => {
 										</YAxis>
                   <Legend />
                   <Tooltip />
-                  {
-                    stateUS.slice(0,-1).map(st => {
-                      return <Line
-                      dataKey={`${st}`}
-                      stroke={getRandomColor()} activeDot={{ r: 8 }}
-                      connectNulls
-                      />
-                    })
-                  }
+					<Line
+						 
+						dataKey="Clear"
+						stroke={"#1f77b4"} 
+						activeDot={{ r: 8 }}
+						connectNulls
+					/>
+					<Line
+						dataKey={"Rain"}
+						stroke={"#ff7f0e"} 
+						activeDot={{ r: 8 }}
+						connectNulls
+					/>
+					<Line
+						dataKey={"Snow"}
+						stroke={"#2ca02c"} 
+						activeDot={{ r: 8 }}
+						connectNulls
+					/>
+					<Line
+						dataKey={"Not_Clear"}
+						stroke={"#8884d8"} 
+						activeDot={{ r: 8 }}
+						connectNulls
+					/>
                 </LineChart>
               </ResponsiveContainer>
             </div>

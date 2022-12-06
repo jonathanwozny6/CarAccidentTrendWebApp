@@ -43,6 +43,9 @@ const Query2 = () => {
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
 
+	// counts the number of times the button is clicked
+	const [btnClickCnt, setBtnClickCnt] = useState(0);
+
 	// function to pass into Search bar dropdown to get receive user input
 	const childToParent = (childSelectedState, index) => {
 			let oldStateUS = stateUS;
@@ -77,6 +80,18 @@ const Query2 = () => {
 			setStateUS(oldStateUS.concat("Enter a State..."));
 	} 
 
+	// function to plot line when plot button is clicked
+	const PlotLine = () => {
+		let oldStateUS = stateUS
+		setStateUS(oldStateUS)
+		if (btnClickCnt === Number.MAX_SAFE_INTEGER){
+				setBtnClickCnt(1)
+		}
+		else
+				setBtnClickCnt(btnClickCnt+1)
+
+		console.log(btnClickCnt);
+	}
 
 	useEffect(() => {
 		const optionsDates = {
@@ -143,7 +158,7 @@ const Query2 = () => {
 			console.log("StateUS", stateUS)
 			console.log("State Leg", stateLeg)
 			
-		}, [stateUS]);
+		}, [btnClickCnt]);
 
 
 		// // https://codesandbox.io/s/81u1y?file=/src/App.js
@@ -207,6 +222,9 @@ const Query2 = () => {
 								</div>
 								<DateInput header="Start Date" placeholder="YYYY/MM/DD" childToParent={getStartDate}/>
 								<DateInput header="End Date" placeholder="YYYY/MM/DD" childToParent={getEndDate}/>
+								<div className="center">
+										<button id="plot-btn" onClick={PlotLine}><h3>Plot Line</h3></button>
+								</div>
 						</div>
 						<div className="lineplot">
 							<h1 className="text-heading">

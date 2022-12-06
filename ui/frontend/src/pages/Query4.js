@@ -199,20 +199,15 @@ const Query4 = () => {
 									<div className="input-location-section">
 											<h3 className='input-pnl-heading'>Location</h3>
 											<div className="dropdown">
-								
-											<SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={0}/>
-											
+												<SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={0}/>
 											</div>
-											<button onClick={addLineClicked}>
-															Plot Line +
-											</button>
-											</div>
+									</div>
 									<DateInput header="Start Date" placeholder="YYYY/MM/DD" childToParent={getStartDate}/>
 									<DateInput header="End Date" placeholder="YYYY/MM/DD" childToParent={getEndDate}/>
 									<div className="hour-granularity-selection-container"> 
 										<h3 className="input-pnl-heading">Time Granularity</h3>
 										<div className="hour-granularity-selection">
-											<p>Group by every...</p>
+											<p className="paragraph">Group by every...</p>
 											<div className="hour-granularity-input-container">
 												<div className="hour-granularity-radio">
 													<p>1</p>
@@ -232,22 +227,27 @@ const Query4 = () => {
 									</div>
 									<div className="severity">
 										<h3 className="input-pnl-heading">Severity</h3>
-										<div className="severity-input">
-												<p>1</p>
-												<input type="checkbox" id="severity-0" onChange={SetSeverities}/>
+										<div className="severity-input-container">
+											<div className="severity-input">
+													<p>1</p>
+													<input type="checkbox" id="severity-0" onChange={SetSeverities}/>
+											</div>
+											<div className="severity-input">
+													<p>2</p>
+													<input type="checkbox" id="severity-1" onChange={SetSeverities}/>
+											</div>
+											<div className="severity-input">
+													<p>3</p>
+													<input type="checkbox" id="severity-2" onChange={SetSeverities}/>
+											</div>
+											<div className="severity-input">
+													<p>4</p>
+													<input type="checkbox" id="severity-3" onChange={SetSeverities}/>
+											</div>
 										</div>
-										<div className="severity-input">
-												<p>2</p>
-												<input type="checkbox" id="severity-1" onChange={SetSeverities}/>
-										</div>
-										<div className="severity-input">
-												<p>3</p>
-												<input type="checkbox" id="severity-2" onChange={SetSeverities}/>
-										</div>
-										<div className="severity-input">
-												<p>4</p>
-												<input type="checkbox" id="severity-3" onChange={SetSeverities}/>
-										</div>
+									</div>
+									<div className="center">
+											<button id="plot-btn" onClick={addLineClicked}><h3>Plot Line</h3></button>
 									</div>
 							</div>
 							<div className="lineplot">

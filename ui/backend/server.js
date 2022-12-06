@@ -187,17 +187,16 @@ app.get('/dates', (req, res) => {
 app.get('/query1/:state', (req, res) => {
     // read in parameter specified in api call
     const st = req.params.state;
-    const d1 = req.query.date1
-    const d2 = req.query.date2
-    // const ma = req.query.mov_avg
+    const d1 = req.query.sDate
+    const d2 = req.query.eDate
+    const ma = req.query.mov_avg
     
 
     // read in the sql query
     // const sqlQuery = fs.readFileSync('./queries/Query1.txt').toString();
     sqlQuery = `SELECT TRUNC(Date_Time) as acc_date,
-                       count(*) AS cnt,
                        AVG(COUNT(*)) OVER 
-                          (ORDER BY TRUNC(Date_Time) ROWS BETWEEN 3 PRECEDING AND CURRENT ROW) AS moving_average
+                          (ORDER BY TRUNC(Date_Time) ROWS BETWEEN ${ma} PRECEDING AND CURRENT ROW) AS ${st}
                     
                 FROM Accident, Road, Location
 
@@ -209,7 +208,11 @@ app.get('/query1/:state', (req, res) => {
                     
                 ORDER BY acc_date ASC`
     fetchData(sqlQuery).then(dbRes => {
-        res.send(dbRes);
+        // remove zulu time on datetimes returned from sql query
+        for (let i = 0; i < dbRes.rows.length; i++) {
+            dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
+        }
+        res.send(dbRes.rows);
     })
     .catch(err => {
         res.send(err);
@@ -338,16 +341,19 @@ app.get('/query4/:state', (req, res) => {
     })       
 })
 
-app.get('/query5', (req, res) => {
+app.get('/query5/:state', (req, res) => {
 
-    const st = req.query.state
+    const st = req.params.state
+    // const d1 = req.query.sDate
+    // const d2 = req.query.eDate
+    const yr = req.query.yr
+    const w_cond = req.query.w_cond
 
     sqlQuery = `SELECT acc_date, 
-                        weather_condition, 
                         cnt/(select count(*) from accident, environment, road, location
                                 where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-                                and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '2019' 
-                                and weather_condition = 'Clear' and state = 'NY' ) as norm_cnt
+                                and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '${yr}' 
+                                and weather_condition = '${w_cond}' and state = '${st}' ) as norm_cnt
 
                     FROM
 
@@ -358,8 +364,8 @@ app.get('/query5', (req, res) => {
                     FROM Accident, Road, Location, Environment
 
                     where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-                    and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '2019' 
-                    and weather_condition = 'Clear' and state = 'NY' 
+                    and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '${yr}' 
+                    and weather_condition = '${w_cond}' and state = '${st}' 
 
                     GROUP BY Extract(Month from Date_Time),
                         weather_condition
