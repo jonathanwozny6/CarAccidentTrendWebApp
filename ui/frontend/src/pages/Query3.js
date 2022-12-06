@@ -53,13 +53,13 @@ const Query3 = () => {
 	}
 
 	// function to add line when "Add Line" button is clicked
-	const addLineClicked = () => {
+	const PlotLine = () => {
 			let oldStateUS = stateUS
 			setStateUS(oldStateUS)
 			setBtnClickCnt(btnClickCnt + 1)
 			console.log("btn clicks", btnClickCnt)
 			console.log("stateUS", stateUS)
-	} 
+	}
 
 	const [data, setData] = React.useState(); //{D: "", NORM_AVG_SEV: "", NORM_AVG_VIS: ""}
 
@@ -99,12 +99,12 @@ const Query3 = () => {
 								<SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={0}/>
 								
 								</div>
-								<button onClick={addLineClicked}>
-												Plot Line +
-								</button>
 						</div>
 						<DateInput header="Start Date" placeholder="YYYY/MM/DD" childToParent={getStartDate}/>
 						<DateInput header="End Date" placeholder="YYYY/MM/DD" childToParent={getEndDate}/>
+						<div className="center">
+								<button id="plot-btn" onClick={PlotLine}><h3>Plot Line</h3></button>
+						</div>
 				</div>
 				<div className="lineplot">
 					<h1 className="text-heading">

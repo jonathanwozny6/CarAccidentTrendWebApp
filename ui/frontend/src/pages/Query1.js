@@ -82,6 +82,8 @@ const Query1 = () => {
 
     // function to plot line when plot button is clicked
     const PlotLine = () => {
+        let oldStateUS = stateUS
+        setStateUS(oldStateUS)
         if (btnClickCnt === Number.MAX_SAFE_INTEGER){
             setBtnClickCnt(1)
         }
@@ -196,7 +198,7 @@ const Query1 = () => {
                             <p></p> <p></p>
                         </div>
                         <div className="center">
-                            <button id="plot-btn" onClick={PlotLine}><h3>P L O T !</h3></button>
+                            <button id="plot-btn" onClick={PlotLine}><h3>Plot Line</h3></button>
                         </div>
                         
                 </div>
