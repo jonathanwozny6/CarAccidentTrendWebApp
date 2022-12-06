@@ -121,17 +121,7 @@ const Query4 = () => {
 
 
 		useEffect(() => {
-		
-			// for (let i = 0; i < 24/parseInt(hourGran); i++) {
-			// 	var dict = {}
-			// 	dict['TIME_BIN'] = i
-			// 	groups.push(dict)
-			// }
-
-			// console.log("groups", groups)
-			// setData(groups)
-			// console.log(data)
-
+			
 			tempSevList = []
 			for (let i = 0; i < severity.length; i++) {
 				if (severity[i] === true){
@@ -147,37 +137,39 @@ const Query4 = () => {
 					}
 
 					console.log(options)
+					if (btnClickCnt % 2 == 1) {
 
-					axios.request(options).then((response) => {
-						
-						if (response.status===200) {
-							const fetchedData = response.data;
-							console.log("severity", i+1)
-							console.log('fetchedData', fetchedData.length, fetchedData);
+						axios.request(options).then((response) => {
 							
-							console.log("Data", data)
-							myData = data
-							console.log("My data", myData)
+							if (response.status===200) {
+								const fetchedData = response.data;
+								console.log("severity", i+1)
+								console.log('fetchedData', fetchedData.length, fetchedData);
+								
+								console.log("Data", data)
+								myData = data
+								console.log("My data", myData)
 
-							for (let k = 0; k < myData.length; k++) {
-								myData[k][`${i+1}`] = null
-							}
-							
-							let j = 0;
-							for (let k = 0; k < fetchedData.length; k++) {
-								while (j < myData.length && fetchedData[k]["TIME_BIN"] != myData[j]["TIME_BIN"]) {
-									j = j + 1
+								for (let k = 0; k < myData.length; k++) {
+									myData[k][`${i+1}`] = null
 								}
-								myData[j][`${i+1}`] = fetchedData[k][`CNT`]
+								
+								let j = 0;
+								for (let k = 0; k < fetchedData.length; k++) {
+									while (j < myData.length && fetchedData[k]["TIME_BIN"] != myData[j]["TIME_BIN"]) {
+										j = j + 1
+									}
+									myData[j][`${i+1}`] = fetchedData[k][`CNT`]
+								}
+								
+								setData(myData)
+								// setData(fetchedData)
+								// console.log("My Data", myData)
 							}
-							
-							setData(myData)
-							// setData(fetchedData)
-							// console.log("My Data", myData)
-						}
-					}).catch((error) => {
-						console.error(error)
-					})
+						}).catch((error) => {
+							console.error(error)
+						})
+					}
 				}
 			}
 
