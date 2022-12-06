@@ -161,14 +161,7 @@ app.get('/dates', (req, res) => {
     // read in parameter specified in api call
     const d1 = req.query.sDate
     const d2 = req.query.eDate
-
-    console.log("sdate", req.query.sDate)
-    console.log("edate", req.query.sDate)
-
-    console.log("d1", d1)
-    console.log("d2", d2)
     
-
     // read in the sql query
     // const sqlQuery = fs.readFileSync('./queries/Query1.txt').toString();
     sqlQuery = `SELECT UNIQUE TRUNC(DATE_TIME) AS ACC_DATE 
@@ -294,7 +287,7 @@ app.get('/query3/:state', (req, res) => {
 
                 where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
                 and env_id = fk_env_id and state = '${st}' 
-                and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
+                and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD')
                 and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
 
                 GROUP BY TRUNC(Date_Time)
