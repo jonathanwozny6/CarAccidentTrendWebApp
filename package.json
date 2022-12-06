@@ -1,0 +1,21 @@
+{
+  "name": "CarAccidentTrendWebApp",
+  "version": "1.0.0",
+  "description": "To run the web application, node.js must be installed on the user's computer.\r First go to nodejs.org and download and install node.js\r (Might have to also run \"npm install\" in your terminal)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jonathanwozny6/CarAccidentTrendWebApp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jonathanwozny6/CarAccidentTrendWebApp/issues"
+  },
+  "homepage": "https://github.com/jonathanwozny6/CarAccidentTrendWebApp#readme"
+}
