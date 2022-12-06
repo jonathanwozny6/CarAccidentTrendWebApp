@@ -18,13 +18,15 @@ import * as scale from 'd3-scale'
 
 const Query2 = () => {
 
-		// all data
-		var myData = {}
+	// all data
+	var myData = {}
 
-		const [stateLeg, setStateLeg] = useState([]);
+	const [data, setData] = useState();
 
-		// number of locations on the line plot
-		const [numLocs, setNumLocs] = useState(1);
+	const [stateLeg, setStateLeg] = useState([]);
+
+	// number of locations on the line plot
+	const [numLocs, setNumLocs] = useState(1);
 
 	// US State selected from Search bar dropdown
 	const [stateUS, setStateUS] = useState([])
@@ -57,25 +59,24 @@ const Query2 = () => {
 			setStateUS(oldStateUS.concat("Enter a State..."));
 	}
 
-		const [data, setData] = React.useState();
 
-		useEffect(() => {
-			const optionsDates = {
-				method: 'GET',
-				url: `http://localhost:8080/dates`, 
-				params: {sDate: startDate, eDate: endDate},
+	useEffect(() => {
+		const optionsDates = {
+			method: 'GET',
+			url: `http://localhost:8080/dates`, 
+			params: {sDate: startDate, eDate: endDate},
+		}
+
+		axios.request(optionsDates).then((response) => {
+			if (response.status===200) {
+				const fetchedData = response.data;
+				setData(fetchedData);
 			}
+		}).catch((error) => {
+			console.error(error)
+		})
 
-			axios.request(optionsDates).then((response) => {
-				if (response.status===200) {
-					const fetchedData = response.data;
-					setData(fetchedData);
-				}
-			}).catch((error) => {
-				console.error(error)
-			})
-
-		}, [endDate])
+	}, [endDate])
 
 
 		useEffect(() => {
