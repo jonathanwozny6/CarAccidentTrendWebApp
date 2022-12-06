@@ -176,7 +176,7 @@ const Query4 = () => {
 										<h3 className="input-pnl-heading">Time Granularity</h3>
 										<div className="hour-granularity-selection">
 											<p>Group by every...</p>
-											<div className="hour-granularity-radio-container">
+											<div className="hour-granularity-input-container">
 												<div className="hour-granularity-radio">
 													<p>1</p>
 													<input type="radio" id="radio-1" name="time-granularity" onChange={GetTimeGranularity}/>
@@ -190,9 +190,6 @@ const Query4 = () => {
 													<input type="radio" id="radio-3" name="time-granularity" onChange={GetTimeGranularity}/>
 												</div>
 											</div>
-											
-
-											
 											<p>...hour(s)</p>
 										</div>
 									</div>
