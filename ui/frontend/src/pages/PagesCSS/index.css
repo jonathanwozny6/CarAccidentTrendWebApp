@@ -27,3 +27,16 @@
     font-style: italic;
     color: darkgrey;
 }
+
+.content .paragraph .tupleCount {
+    display: block;
+    align-items: center;
+}
+
+.countTable {
+    margin:auto;
+}
+
+.tableName {
+    text-align: right;
+}
