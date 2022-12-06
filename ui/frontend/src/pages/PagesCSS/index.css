@@ -1,0 +1,29 @@
+.content {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    text-align: left;
+}
+
+.content h1 {
+    margin: auto;
+    margin-top: 10px;
+}
+
+.content .paragraph {
+    margin: auto;
+    text-align: center;
+    width: 50%;
+}
+
+.content .paragraph .introduction {
+    text-align: left;
+}
+
+.content .paragraph .subtitle {
+    text-align: center;
+    font-size: 14px;
+    font-style: italic;
+    color: darkgrey;
+}

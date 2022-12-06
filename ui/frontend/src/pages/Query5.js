@@ -12,6 +12,7 @@ import {
     Line,
     XAxis,
     YAxis,
+    Label,
     CartesianGrid
 } from 'recharts';
 import * as scale from 'd3-scale'
@@ -140,7 +141,7 @@ const Query5 = () => {
     
     return (
       <div className="page-container">
-        <h1>Precipitation Based Accidents</h1> 
+        <h1>Frequency of Accidents During Inclement Weather</h1> 
         <div className="display-container">
             <div className="input-pnl">
                 <div className="input-location-section">
@@ -166,7 +167,12 @@ const Query5 = () => {
                 <LineChart data = {data} xScale={scale.scaleTime} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
                   <CartesianGrid strokeDasharray="3 3"/>
                   <XAxis dataKey="ACC_DATE" numberOfTicks={6} />
-                  <YAxis></YAxis>
+                  <YAxis
+											yAxisId="left-axis"
+											orientation="left"
+											>
+											<Label value='Frequency' offset={2} angle="-90" />
+										</YAxis>
                   <Legend />
                   <Tooltip />
                   {

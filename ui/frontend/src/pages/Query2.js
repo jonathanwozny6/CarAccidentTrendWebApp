@@ -1,7 +1,6 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import SearchBar from '../components/SearchBar';
-import SimpleDropdown from '../components/SimpleDropdown'
 import DateInput from '../components/DateInput'
 import dataStates from "../ParamData/States.json"
 import "./PagesCSS/Query2.css"
@@ -13,6 +12,7 @@ import {
     Line,
     XAxis,
     YAxis,
+	Label,
     CartesianGrid
 } from 'recharts';
 import * as scale from 'd3-scale'
@@ -153,8 +153,8 @@ const Query2 = () => {
 		
 		return (
 			<div className="page-container">
-					<h1>Average Accident Frequency by Region and Time Period</h1> 
-          <div className="display-container">
+				<h1>Average Accident Frequency by Street Type and Severity</h1> 
+          		<div className="display-container">
 						<div className="input-pnl">
 								<div id="road-type-section" className="section">
 									<h3>Road Type</h3>
@@ -215,7 +215,12 @@ const Query2 = () => {
 								<LineChart data = {data} xScale={scale.scaleTime} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
 									<CartesianGrid strokeDasharray="3 3"/>
 									<XAxis dataKey="ACC_DATE" numberOfTicks={6} />
-									<YAxis></YAxis>
+									<YAxis
+										yAxisId="left-axis"
+										orientation="left"
+										>
+										<Label value='Frequency' offset={2} angle="-90" />
+									</YAxis>
 									<Legend />
 									<Tooltip />
 									{
@@ -230,7 +235,7 @@ const Query2 = () => {
 								</LineChart>
 							</ResponsiveContainer>
 						</div>
-					</div>
+				</div>
 			</div>
 		);
 };
