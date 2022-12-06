@@ -41,7 +41,7 @@ const Query4 = () => {
 		// all data
 		var myData = {}
 
-		const [data, setData] = useState({});
+		const [data, setData] = useState();
 
 		// const [stateLeg, setStateLeg] = useState([]);
 
@@ -95,14 +95,16 @@ const Query4 = () => {
 
 		useEffect(() => {
 			var groups = []
-			for (let i = 0; i < 24/hourGran; i++) {
+			for (let i = 0; i < 24/parseInt(hourGran); i++) {
 				var dict = {}
 				dict['TIME_BIN'] = i
-				groups[i] = dict
+				groups.push(dict)
 			}
+
 			console.log("groups", groups)
 
-			setData(groups)
+			// setData(groups)
+			// console.log("Data", data)
 
 			for (let i = 0; i < severity.length; i++) {
 				if (severity[i] === true){
@@ -135,11 +137,11 @@ const Query4 = () => {
 								while (j < myData.length && fetchedData[k]["TIME_BIN"] != myData[j]["TIME_BIN"]) {
 									j = j + 1
 								}
-								myData[j][`${i+1}`] = fetchedData[k][`${i+1}`]
+								myData[j][`${i+1}`] = fetchedData[k][`CNT`]
 							}
 							
 							setData(myData)
-							
+							// setData(fetchedData)
 							// console.log("My Data", myData)
 
 						}
