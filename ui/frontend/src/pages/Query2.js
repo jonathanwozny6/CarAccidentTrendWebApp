@@ -26,13 +26,13 @@ const Query2 = () => {
 		// number of locations on the line plot
 		const [numLocs, setNumLocs] = useState(1);
 
-		// US State selected from Search bar dropdown
-		const [stateUS, setStateUS] = useState([])
-		// let stateUS = ["Enter a State..."]
+	// US State selected from Search bar dropdown
+	const [stateUS, setStateUS] = useState([])
+	// let stateUS = ["Enter a State..."]
 
-		// start and end date input
-		const [startDate, setStartDate] = useState("");
-		const [endDate, setEndDate] = useState("");
+	// start and end date input
+	const [startDate, setStartDate] = useState("");
+	const [endDate, setEndDate] = useState("");
 
 		// function to pass into Search bar dropdown to get receive user input
 		const childToParent = (childSelectedState, index) => {
@@ -41,21 +41,21 @@ const Query2 = () => {
 				setStateUS(oldStateUS);
 		}
 
-		// function to pass into start date input to receive user input
-		const getStartDate = (startDateInput) => {
-				setStartDate(startDateInput);
-		}
+	// function to pass into start date input to receive user input
+	const getStartDate = (startDateInput) => {
+			setStartDate(startDateInput);
+	}
 
-		// function to pass into end date input to receive user input
-		const getEndDate = (endDateInput) => {
-				setEndDate(endDateInput);
-		}
+	// function to pass into end date input to receive user input
+	const getEndDate = (endDateInput) => {
+			setEndDate(endDateInput);
+	}
 
-		// function to add line when "Add Line" button is clicked
-		const addLineClicked = () => {
-				let oldStateUS = stateUS
-				setStateUS(oldStateUS.concat("Enter a State..."));
-		}
+	// function to add line when "Add Line" button is clicked
+	const addLineClicked = () => {
+			let oldStateUS = stateUS
+			setStateUS(oldStateUS.concat("Enter a State..."));
+	}
 
 		const [data, setData] = React.useState();
 
@@ -100,7 +100,7 @@ const Query2 = () => {
 						console.log(myData)
 
 						for (let k = 0; k < myData.length; k++) {
-							myData[k][`${stateUS[i]}`] = 0
+							myData[k][`${stateUS[i]}`] = null
 						}
 
 						let j = 0;
@@ -166,6 +166,7 @@ const Query2 = () => {
 											return <Line
 											dataKey={`${st}`}
 											stroke={getRandomColor()} activeDot={{ r: 8 }}
+											connectNulls
 											/>
 										})
 									}

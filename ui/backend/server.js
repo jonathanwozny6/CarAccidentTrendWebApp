@@ -15,8 +15,8 @@ const { query } = require('express');
 
 // user database information
 const config = {
-    user: 'JWOZNY',
-    password: 'FHUoypE7R3vNnPFQ94SfUVir',
+    user: 'NSALAZAR1',
+    password: 'D9WT1G7Tm2v5ktieDDRUojAZ',
     connectString:'oracle.cise.ufl.edu/orcl'
   }
 
@@ -161,6 +161,12 @@ app.get('/dates', (req, res) => {
     // read in parameter specified in api call
     const d1 = req.query.sDate
     const d2 = req.query.eDate
+
+    console.log("sdate", req.query.sDate)
+    console.log("edate", req.query.sDate)
+
+    console.log("d1", d1)
+    console.log("d2", d2)
     
 
     // read in the sql query
@@ -174,6 +180,8 @@ app.get('/dates', (req, res) => {
                     
                 ORDER BY ACC_DATE ASC`
 
+    console.log(sqlQuery)
+
     fetchData(sqlQuery).then(dbRes => {
         for (let i = 0; i < dbRes.rows.length; i++) {
             dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
@@ -185,11 +193,12 @@ app.get('/dates', (req, res) => {
     })
 })
 
-app.get('/query1', (req, res) => {
+app.get('/query1/:state', (req, res) => {
     // read in parameter specified in api call
-    var st = req.query.state1;
-    // const d1 = req.query.date1
-    // const d2 = req.query.date2
+    const st = req.params.state;
+    const d1 = req.query.date1
+    const d2 = req.query.date2
+    // const ma = req.query.mov_avg
     
 
     // read in the sql query
@@ -202,8 +211,8 @@ app.get('/query1', (req, res) => {
                 FROM Accident, Road, Location
 
                 where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st and state = '${st}'
-                and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
-                and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
+                and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
+                and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
 
                 GROUP BY TRUNC(Date_Time)
                     
@@ -224,22 +233,9 @@ app.get('/query2/:state', (req, res) => {
     const d2 = req.query.eDate
 
     sqlQuery = 
-            // `SELECT EXTRACT(DAY FROM Date_Time) as d, 
-            //            count(*) AS cnt
-            
-            //     FROM Accident, Road, Location
-                
-            //     where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-            //         and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
-            //         and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
-            //         and state = '${st}'
-                
-            //     GROUP BY EXTRACT(DAY FROM Date_Time)
-                
-            //     ORDER BY d ASC`
-
-                `SELECT TRUNC(Date_Time) as acc_date,
-                                count(*) AS ${st}
+            `SELECT TRUNC(Date_Time) as acc_date,
+                        AVG(COUNT(*)) OVER 
+                        (ORDER BY TRUNC(Date_Time) ROWS BETWEEN 10 PRECEDING AND CURRENT ROW) AS ${st}
                                 
                         FROM Accident, Road, Location
                         
@@ -250,7 +246,22 @@ app.get('/query2/:state', (req, res) => {
                         
                         GROUP BY TRUNC(Date_Time)
                 
-                        ORDER BY acc_date ASC`      
+                        ORDER BY acc_date ASC`  
+
+                // `SELECT TRUNC(Date_Time) as acc_date,
+                //                 count(*) AS ${st}
+                                
+                //         FROM Accident, Road, Location
+                        
+                //         where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+                //             and state = '${st}' 
+                //             and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
+                //             and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
+                        
+                //         GROUP BY TRUNC(Date_Time)
+                
+                //         ORDER BY acc_date ASC`  
+
     fetchData(sqlQuery).then(dbRes => {
         // remove zulu time on datetimes returned from sql query
         for (let i = 0; i < dbRes.rows.length; i++) {
@@ -264,11 +275,11 @@ app.get('/query2/:state', (req, res) => {
 })
 
 
-app.get('/query3', (req, res) => {
+app.get('/query3/:state', (req, res) => {
 
-    const st = req.query.state
-    // const d1 = req.query.date1
-    // const st = req.query.date2
+    const st = req.params.state
+    const d1 = req.query.date1
+    const d2 = req.query.date2
 
     sqlQuery = `SELECT acc_date, 
                 AVG_SEV/(SELECT MAX(severity) FROM Accident) norm_avg_sev, 
@@ -283,14 +294,17 @@ app.get('/query3', (req, res) => {
 
                 where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
                 and env_id = fk_env_id and state = '${st}' 
-                and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
-                and Date_Time < TO_DATE('2017/01/30', 'YYYY/MM/DD')
+                and Date_Time >= TO_DATE('${dt1}', 'YYYY/MM/DD') 
+                and Date_Time < TO_DATE('${dt2}', 'YYYY/MM/DD')
 
                 GROUP BY TRUNC(Date_Time)
                     
                 ORDER BY acc_date ASC)`
             
     fetchData(sqlQuery).then(dbRes => {
+        for (let i = 0; i < dbRes.rows.length; i++) {
+            dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
+        }
         res.send(dbRes.rows);
     })
     .catch(err => {
@@ -325,6 +339,9 @@ app.get('/query4', (req, res) => {
 `
             
     fetchData(sqlQuery).then(dbRes => {
+        for (let i = 0; i < dbRes.rows.length; i++) {
+            dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
+        }
         res.send(dbRes.rows);
     })
     .catch(err => {
@@ -336,22 +353,29 @@ app.get('/query5', (req, res) => {
 
     const st = req.query.state
 
-    // THIS IS QUERY 4 -> NEED TO CORRECT QUERY 5 AND CHANGE
+    sqlQuery = `SELECT acc_date, 
+                        weather_condition, 
+                        cnt/(select count(*) from accident, environment, road, location
+                                where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+                                and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '2019' 
+                                and weather_condition = 'Clear' and state = 'NY' ) as norm_cnt
 
-    sqlQuery = `SELECT TRUNC(Date_Time) as acc_date, 
-                       count(*) AS cnt
+                    FROM
+
+                    (SELECT Extract(Month from Date_Time) as acc_date,
+                    weather_condition,
+                    count(*) AS cnt
                     
-                FROM Accident, Road, Location
+                    FROM Accident, Road, Location, Environment
 
-                where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-                and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
-                and Date_Time < TO_DATE('2018/01/01', 'YYYY/MM/DD')
-                and state = '${st}' 
+                    where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+                    and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '2019' 
+                    and weather_condition = 'Clear' and state = 'NY' 
 
-                GROUP BY TRUNC(Date_Time)
+                    GROUP BY Extract(Month from Date_Time),
+                        weather_condition
 
-                ORDER BY acc_date ASC;
-`
+                    ORDER BY acc_date, weather_condition ASC)`
             
     fetchData(sqlQuery).then(dbRes => {
         res.send(dbRes.rows);
