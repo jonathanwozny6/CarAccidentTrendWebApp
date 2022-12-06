@@ -173,8 +173,6 @@ app.get('/dates', (req, res) => {
                     
                 ORDER BY ACC_DATE ASC`
 
-    console.log(sqlQuery)
-
     fetchData(sqlQuery).then(dbRes => {
         for (let i = 0; i < dbRes.rows.length; i++) {
             dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
