@@ -1,0 +1,65 @@
+.page-container{
+  display: flex;
+  flex-direction: column;
+}
+
+.page-container h1 {
+  margin: auto;
+}
+
+.display-container{
+  display: flex;
+  flex-direction: row;
+}
+
+.input-pnl {
+  width: 200px;
+  height: auto;
+  min-height: 250px;
+  background-color: rgb(222, 233, 238);
+  /* flex-direction: column; */
+  margin-top: 40px;
+  margin-left: 40px;
+  border-style: solid;
+  border-radius: 20px;
+  position: relative;
+  padding-bottom: 40px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.input-pnl-heading {
+  font-size: 25px;
+}
+
+.input-location-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 20px;
+  padding-top: 20px;
+}
+
+.lineplot {
+  margin-top: 40px;
+  margin-left: 40px;
+}
+
+
+.hour-granularity-selection {
+  margin-top: 30px;
+}
+
+.hour-granularity-selection p {
+  font-size: 20px;
+}
+
+.severity-input {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.severity-input input {
+  margin-left: 30px;
+}
