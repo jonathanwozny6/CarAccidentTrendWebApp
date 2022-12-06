@@ -173,8 +173,6 @@ app.get('/dates', (req, res) => {
                     
                 ORDER BY ACC_DATE ASC`
 
-    console.log(sqlQuery)
-
     fetchData(sqlQuery).then(dbRes => {
         for (let i = 0; i < dbRes.rows.length; i++) {
             dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
@@ -305,9 +303,12 @@ app.get('/query3/:state', (req, res) => {
     })       
 })
 
-app.get('/query4', (req, res) => {
+app.get('/query4/:state', (req, res) => {
 
-    const st = req.query.state
+    const st = req.params.state
+    const hr_grp = req.query.hr_grp
+    const sev = req.query.sev
+    
     // const d1 = req.query.date1
     // const d2 = req.query.date2
     // var yr = PARSE D1 AND GET THE YEAR 
@@ -316,25 +317,25 @@ app.get('/query4', (req, res) => {
 
     // const yr = req.query.year
 
-    sqlQuery = `SELECT TRUNC(Date_Time) as acc_date, 
-                       count(*) AS cnt
-                    
-                FROM Accident, Road, Location
+    sqlQuery = `SELECT FLOOR(EXTRACT(HOUR FROM Date_Time)/${hr_grp}) as TIME_BIN,
+                        count(*) AS cnt
+                        
+                    FROM Accident, Road, Location
 
-                where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-                and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
-                and Date_Time < TO_DATE('2018/01/01', 'YYYY/MM/DD')
-                and state = '${st}' 
+                    where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+                    and Date_Time >= TO_DATE('2018/01/01', 'YYYY/MM/DD') 
+                    and Date_Time < TO_DATE('2018/01/30', 'YYYY/MM/DD')
+                    and state = '${st}'
+                    and severity = ${sev}
 
-                GROUP BY TRUNC(Date_Time)
+                    GROUP BY FLOOR(EXTRACT(HOUR FROM Date_Time)/${hr_grp})
 
-                ORDER BY acc_date ASC;
-`
+                    ORDER BY TIME_BIN`
             
     fetchData(sqlQuery).then(dbRes => {
-        for (let i = 0; i < dbRes.rows.length; i++) {
-            dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
-        }
+        // for (let i = 0; i < dbRes.rows.length; i++) {
+        //     dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
+        // }
         res.send(dbRes.rows);
     })
     .catch(err => {

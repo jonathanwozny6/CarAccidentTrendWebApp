@@ -40,14 +40,18 @@ const Query4 = () => {
 
 		// all data
 		var myData = {}
+		var tempSevList = []
+		const [sevLeg, setSevLeg] = useState([])
 
-		const [stateLeg, setStateLeg] = useState([]);
+		const [data, setData] = useState();
+
+		const [btnClickCnt, setBtnClickCnt] = useState(0);
 
 		// number of locations on the line plot
 		const [numLocs, setNumLocs] = useState(1);
 
 		// US State selected from Search bar dropdown
-		const [stateUS, setStateUS] = useState(["Enter a State..."])
+		const [stateUS, setStateUS] = useState("hey")
 
 		// time granularity by hour
 		const [hourGran, setHourGran] = useState("")
@@ -60,17 +64,15 @@ const Query4 = () => {
 		const [endDate, setEndDate] = useState("");
 
 		// function to pass into Search bar dropdown to get receive user input
-		const childToParent = (childSelectedState, index) => {
-				let oldStateUS = stateUS;
-				oldStateUS[index] = childSelectedState;
-				setStateUS(oldStateUS);
+		const childToParent = (childSelectedState) => {
+				setStateUS(childSelectedState);
 		}
 
 		// function to pass into Search bar dropdown hour granularity to receive user input
 		const GetTimeGranularity = (event) => {
 				const index = event.target.id.slice(-1)
 				setHourGran(index)
-				console.log(hourGran)
+				console.log("Hour Gran", hourGran)
 		}
 
 		// function to set the selected severities
@@ -81,75 +83,80 @@ const Query4 = () => {
 			setSeverity(currSeverity);
 		}
 
-		const [data, setData] = React.useState();
+		// function to add line when "Add Line" button is clicked
+		const addLineClicked = () => {
+			let oldStateUS = stateUS
+			setStateUS(oldStateUS)
+			setBtnClickCnt(btnClickCnt + 1)
+			console.log("btn clicks", btnClickCnt)
+			console.log("stateUS", stateUS)
+		} 
+
 
 		useEffect(() => {
-			const optionsDates = {
-				method: 'GET',
-				url: `http://localhost:8080/dates`, 
-				params: {sDate: startDate, eDate: endDate},
+			var groups = []
+			for (let i = 0; i < 24/parseInt(hourGran); i++) {
+				var dict = {}
+				dict['TIME_BIN'] = i
+				groups.push(dict)
 			}
 
-			axios.request(optionsDates).then((response) => {
-				if (response.status===200) {
-					const fetchedData = response.data;
-					setData(fetchedData);
-				}
-			}).catch((error) => {
-				console.error(error)
-			})
+			console.log("groups", groups)
 
-		}, [endDate])
-
-
-		useEffect(() => {
-			if (stateUS[0] != "Enter a State...") {
-
-			
-				const i = stateUS.slice(0,-1).length - 1
-
-				// options for data request to backend
-				const options = {
-					method: 'GET',
-					url: `http://localhost:8080/query2/${stateUS[i]}`, 
-					params: {sDate: startDate, eDate: endDate},
-				}
-
-				axios.request(options).then((response) => {
-					
-					if (response.status===200) {
-						const fetchedData = response.data;
-						console.log('fetchedData', fetchedData.length, fetchedData);
-						myData = data
-						console.log(myData)
-
-						for (let k = 0; k < myData.length; k++) {
-							myData[k][`${stateUS[i]}`] = 0
-						}
-
-						let j = 0;
-						for (let k = 0; k < fetchedData.length; k++) {
-							while (j < myData.length && fetchedData[k]["ACC_DATE"] != myData[j]["ACC_DATE"]) {
-								j = j + 1
-							}
-							myData[j][`${stateUS[i]}`] = fetchedData[k][`${stateUS[i]}`]
-						}
-						
-						setData(myData)
-						
-						console.log("My Data", myData)
-
+			setData(groups)
+			console.log("Data", data)
+			tempSevList = []
+			for (let i = 0; i < severity.length; i++) {
+				
+				if (severity[i] === true){
+					tempSevList.push(i+1)
+					setSevLeg(tempSevList)
+					console.log("tempSevList", tempSevList)
+					console.log("sevLeg", sevLeg)	
+					// options for data request to backend
+					const options = {
+						method: 'GET',
+						url: `http://localhost:8080/query4/${stateUS}`, 
+						params: {hr_grp: hourGran, sev: i+1},
 					}
-					
-				}).catch((error) => {
-					console.error(error)
-				})
+
+					console.log(options)
+
+					axios.request(options).then((response) => {
+						
+						if (response.status===200) {
+							const fetchedData = response.data;
+							console.log("severity", i+1)
+							console.log('fetchedData', fetchedData.length, fetchedData);
+							
+							console.log("Data", data)
+							myData = data
+							console.log("My data", myData)
+
+							for (let k = 0; k < myData.length; k++) {
+								myData[k][`${i+1}`] = null
+							}
+							
+							let j = 0;
+							for (let k = 0; k < fetchedData.length; k++) {
+								while (j < myData.length && fetchedData[k]["TIME_BIN"] != myData[j]["TIME_BIN"]) {
+									j = j + 1
+								}
+								myData[j][`${i+1}`] = fetchedData[k][`CNT`]
+							}
+							
+							setData(myData)
+							// setData(fetchedData)
+							// console.log("My Data", myData)
+
+						}
+					}).catch((error) => {
+						console.error(error)
+					})
+				}
 			}
-			console.log("stateUS length", stateUS.length)
-			console.log("StateUS", stateUS)
-			console.log("State Leg", stateLeg)
-			
-		}, [stateUS, hourGran]);
+
+		}, [btnClickCnt]);
 
 
 		// // https://codesandbox.io/s/81u1y?file=/src/App.js
@@ -165,13 +172,14 @@ const Query4 = () => {
 									<div className="input-location-section">
 											<h3 className='input-pnl-heading'>Location</h3>
 											<div className="dropdown">
-													{
-														stateUS.map((state, index) => {
-																return <SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={index}/>
-														})
-													}
+								
+											<SearchBar placeholder={"Enter a State..."} data={dataStates} childToParent={childToParent} index={0}/>
+											
 											</div>
-									</div>
+											<button onClick={addLineClicked}>
+															Plot Line +
+											</button>
+											</div>
 									<div className="hour-granularity-selection-container"> 
 										<h3 className="input-pnl-heading">Time Granularity</h3>
 										<div className="hour-granularity-selection">
@@ -217,20 +225,29 @@ const Query4 = () => {
 								<h1 className="text-heading">
 								</h1>
 								<ResponsiveContainer width="100%" aspect={2} >
-									<LineChart data = {data} xScale={scale.scaleTime} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
+									<LineChart data = {data} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
 										<CartesianGrid strokeDasharray="3 3"/>
-										<XAxis dataKey="ACC_DATE" numberOfTicks={6} />
+										<XAxis dataKey="TIME_BIN" />
 										<YAxis></YAxis>
 										<Legend />
 										<Tooltip />
 										{
-											stateUS.slice(0,-1).map(st => {
-												return <Line
-												dataKey={`${st}`}
-												stroke={getRandomColor()} activeDot={{ r: 8 }}
-												/>
+											sevLeg.map(i => {
+													return <Line
+													dataKey={`${i}`}
+													stroke={getRandomColor()} 
+													activeDot={{ r: 8 }}
+													connectNulls
+													/>
 											})
 										}
+										{/* <Line
+											
+											dataKey="CNT"
+											stroke={getRandomColor()} 
+											activeDot={{ r: 8 }}
+											connectNulls
+										/> */}
 									</LineChart>
 								</ResponsiveContainer>
 							</div>
