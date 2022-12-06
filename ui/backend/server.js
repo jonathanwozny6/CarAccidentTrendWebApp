@@ -344,14 +344,15 @@ app.get('/query4/:state', (req, res) => {
 app.get('/query5/:state', (req, res) => {
 
     const st = req.params.state
-    const d1 = req.query.sDate
-    const d2 = req.query.eDate
+    // const d1 = req.query.sDate
+    // const d2 = req.query.eDate
+    const yr = req.query.yr
     const w_cond = req.query.w_cond
 
     sqlQuery = `SELECT acc_date, 
                         cnt/(select count(*) from accident, environment, road, location
                                 where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-                                and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '2019' 
+                                and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '${yr}' 
                                 and weather_condition = '${w_cond}' and state = '${st}' ) as norm_cnt
 
                     FROM
@@ -363,7 +364,7 @@ app.get('/query5/:state', (req, res) => {
                     FROM Accident, Road, Location, Environment
 
                     where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-                    and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '2019' 
+                    and fk_env_id = env_id and EXTRACT(YEAR FROM Date_Time) = '${yr}' 
                     and weather_condition = '${w_cond}' and state = '${st}' 
 
                     GROUP BY Extract(Month from Date_Time),
