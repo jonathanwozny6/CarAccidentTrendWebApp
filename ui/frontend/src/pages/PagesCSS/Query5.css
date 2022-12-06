@@ -14,13 +14,18 @@
 
 .input-pnl {
   width: 300px;
-  height: 600px;
+  min-height: 400px;
+  /* height: auto; */
   background-color: rgb(222, 233, 238);
   flex-direction: column;
   margin-top: 40px;
   border-style: solid;
   border-radius: 20px;
   position: relative;
+}
+
+.input-pnl>* {
+  margin:24px;
 }
 
 .input-pnl-heading {

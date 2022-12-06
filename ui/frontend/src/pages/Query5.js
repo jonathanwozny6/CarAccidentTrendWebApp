@@ -18,28 +18,31 @@ import * as scale from 'd3-scale'
 
 const Query5 = () => {
 
-		// all data
-		var myData = {}
+	// all data
+	var myData = {}
 
-		const [stateLeg, setStateLeg] = useState([]);
+	const [stateLeg, setStateLeg] = useState([]);
 
-		// number of locations on the line plot
-		const [numLocs, setNumLocs] = useState(1);
+	// number of locations on the line plot
+	const [numLocs, setNumLocs] = useState(1);
 
 	// US State selected from Search bar dropdown
-	const [stateUS, setStateUS] = useState([])
+	const [stateUS, setStateUS] = useState(["Enter a State"])
 	// let stateUS = ["Enter a State..."]
 
 	// start and end date input
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
 
-		// function to pass into Search bar dropdown to get receive user input
-		const childToParent = (childSelectedState, index) => {
-				let oldStateUS = stateUS;
-				oldStateUS[index] = childSelectedState;
-				setStateUS(oldStateUS);
-		}
+	// button to plot line
+	const [btnClickCnt, setBtnClickCnt] = useState(0);
+
+	// function to pass into Search bar dropdown to get receive user input
+	const childToParent = (childSelectedState, index) => {
+			let oldStateUS = stateUS;
+			oldStateUS[index] = childSelectedState;
+			setStateUS(oldStateUS);
+	}
 
 	// function to pass into start date input to receive user input
 	const getStartDate = (startDateInput) => {
@@ -51,10 +54,13 @@ const Query5 = () => {
 			setEndDate(endDateInput);
 	}
 
-	// function to add line when "Add Line" button is clicked
-	const addLineClicked = () => {
-			let oldStateUS = stateUS
-			setStateUS(oldStateUS.concat("Enter a State..."));
+	// function to plot line when plot button is clicked
+	const PlotLine = () => {
+			if (btnClickCnt === Number.MAX_SAFE_INTEGER){
+					setBtnClickCnt(1)
+			}
+			else
+					setBtnClickCnt(btnClickCnt+1)
 	}
 
 		const [data, setData] = React.useState();
@@ -146,15 +152,11 @@ const Query5 = () => {
 													})
 												}
 										</div>
-										<button className="add-curve-btn" onClick={addLineClicked}>
-												Add Line +
-										</button>
 								</div>
 								<DateInput header="Start Date" placeholder="YYYY/MM/DD" childToParent={getStartDate}/>
 								<DateInput header="End Date" placeholder="YYYY/MM/DD" childToParent={getEndDate}/>
-								<div className="precipitation-section">
-										<h3>Precipitation</h3>
-										
+								<div className="center">
+									<button id="plot-btn" onClick={PlotLine}><h3>P L O T !</h3></button>
 								</div>
 						</div>
 						<div className="lineplot">
