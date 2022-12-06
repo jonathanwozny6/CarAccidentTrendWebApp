@@ -40,10 +40,10 @@ const Query4 = () => {
 
 		// all data
 		var myData = {}
+		var tempSevList = []
+		const [sevLeg, setSevLeg] = useState([])
 
 		const [data, setData] = useState();
-
-		// const [stateLeg, setStateLeg] = useState([]);
 
 		const [btnClickCnt, setBtnClickCnt] = useState(0);
 
@@ -103,11 +103,16 @@ const Query4 = () => {
 
 			console.log("groups", groups)
 
-			// setData(groups)
-			// console.log("Data", data)
-
+			setData(groups)
+			console.log("Data", data)
+			tempSevList = []
 			for (let i = 0; i < severity.length; i++) {
+				
 				if (severity[i] === true){
+					tempSevList.push(i+1)
+					setSevLeg(tempSevList)
+					console.log("tempSevList", tempSevList)
+					console.log("sevLeg", sevLeg)	
 					// options for data request to backend
 					const options = {
 						method: 'GET',
@@ -145,12 +150,12 @@ const Query4 = () => {
 							// console.log("My Data", myData)
 
 						}
-						
 					}).catch((error) => {
 						console.error(error)
 					})
 				}
-			}		
+			}
+
 		}, [btnClickCnt]);
 
 
@@ -229,19 +234,23 @@ const Query4 = () => {
 										<YAxis></YAxis>
 										<Legend />
 										<Tooltip />
-										{/* {
-											stateUS.slice(0,-1).map(st => {
-												return <Line
-												dataKey={`${st}`}
-												stroke={getRandomColor()} activeDot={{ r: 8 }}
-												/>
+										{
+											sevLeg.map(i => {
+													return <Line
+													dataKey={`${i}`}
+													stroke={getRandomColor()} 
+													activeDot={{ r: 8 }}
+													connectNulls
+													/>
 											})
-										} */}
-										<Line
+										}
+										{/* <Line
 											
 											dataKey="CNT"
-											stroke={getRandomColor()} activeDot={{ r: 8 }}
-										/>
+											stroke={getRandomColor()} 
+											activeDot={{ r: 8 }}
+											connectNulls
+										/> */}
 									</LineChart>
 								</ResponsiveContainer>
 							</div>
