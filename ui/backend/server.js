@@ -309,13 +309,8 @@ app.get('/query4/:state', (req, res) => {
     const hr_grp = req.query.hr_grp
     const sev = req.query.sev
     
-    // const d1 = req.query.date1
-    // const d2 = req.query.date2
-    // var yr = PARSE D1 AND GET THE YEAR 
-
-    // OR -> SHOULD JUST DO THIS INSTEAD AND GET THE YEAR
-
-    // const yr = req.query.year
+    const d1 = req.query.sDate
+    const d2 = req.query.eDate
 
     sqlQuery = `SELECT FLOOR(EXTRACT(HOUR FROM Date_Time)/${hr_grp}) as TIME_BIN,
                         count(*) AS cnt
@@ -323,8 +318,8 @@ app.get('/query4/:state', (req, res) => {
                     FROM Accident, Road, Location
 
                     where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-                    and Date_Time >= TO_DATE('2018/01/01', 'YYYY/MM/DD') 
-                    and Date_Time < TO_DATE('2018/01/30', 'YYYY/MM/DD')
+                    and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
+                    and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
                     and state = '${st}'
                     and severity = ${sev}
 
