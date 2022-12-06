@@ -12,6 +12,7 @@ import {
     Line,
     XAxis,
     YAxis,
+	Label,
     CartesianGrid
 } from 'recharts';
 import * as scale from 'd3-scale'
@@ -255,8 +256,15 @@ const Query4 = () => {
 								<ResponsiveContainer width="100%" aspect={2} >
 									<LineChart data = {data} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
 										<CartesianGrid strokeDasharray="3 3"/>
-										<XAxis dataKey="TIME_BIN" />
-										<YAxis></YAxis>
+										<XAxis dataKey="TIME_BIN">
+											<Label value='Time' offset={2}/>
+										</XAxis>
+										<YAxis
+											yAxisId="left-axis"
+											orientation="left"
+											>
+											<Label value='Frequency' offset={2} angle="-90" />
+										</YAxis>
 										<Legend />
 										<Tooltip />
 										{

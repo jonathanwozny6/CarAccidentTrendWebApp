@@ -48,6 +48,8 @@
 .lineplot {
   margin-top: 40px;
   margin-left: 40px;
+  min-height: 400px;
+  max-height: 400px;
 }
 
 .section>h3{ 

@@ -129,6 +129,24 @@ app.get('/envCounts', (req,res) => {
     })
 })
 
+app.get('/allCounts', (req,res) => {
+    // accident count
+    sqlQuery = 
+    `select t1.acc_ct + t2.r_ct + t3.e_ct + t4.l_ct as tot_ct
+    from (select count(*) as acc_ct from accident) t1, 
+    (select count(*) as r_ct from road) t2,
+    (select count(*) as e_ct from environment) t3,
+    (select count(*) as l_ct from location) t4;
+`
+
+    fetchData(sqlQuery).then(dbRes => {
+        res.send(dbRes);
+    })
+    .catch(err => {
+        res.send(err);
+    })
+})
+
 app.get('/tempQuery', (req, res) => {
     // read in parameter specified in api call
     var st = req.query.state1;
