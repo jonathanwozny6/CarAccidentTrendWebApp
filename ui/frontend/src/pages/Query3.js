@@ -26,6 +26,8 @@ const Query3 = () => {
 	// US State selected from Search bar dropdown
 	const [stateUS, setStateUS] = useState([""]);
 
+	const [renderTrigger, setRender] = useState(true)
+
 	// start and end date input
 	const [startDate, setStartDate] = useState("");
 	const [endDate, setEndDate] = useState("");
@@ -48,20 +50,25 @@ const Query3 = () => {
 			setEndDate(endDateInput);
 	}
 
+	const PlotLines = () => {
+		setRender(!renderTrigger)
+	}
+
 	// function to add line when "Add Line" button is clicked
-	/* const addLineClicked = () => {
+	const addLineClicked = () => {
 			let oldStateUS = stateUS
 			setStateUS(oldStateUS.concat("Enter a State..."));
-	} */
+	} 
 
 	const [data, setData] = React.useState(); //{D: "", NORM_AVG_SEV: "", NORM_AVG_VIS: ""}
 
 	useEffect(() => {
+		console.log(stateUS[0])
 		// options for data request to backend
 		const options = {
 			method: 'GET',
-			url: 'http://localhost:8080/query3',
-			params: {state: stateUS[0], sDate: startDate, eDate: endDate},
+			url: `http://localhost:8080/query3/${stateUS[0]}`, 
+			params: {sDate: startDate, eDate: endDate},
 		}
 
 		axios.request(options).then((response) => {
@@ -70,14 +77,14 @@ const Query3 = () => {
 				console.log('fetchedData', fetchedData.length);
 				setData(fetchedData)
 			}
-			// console.log("successfully retrieved data for query 2")
+			// console.log("successfully retrieved data for query 3")
 			console.log(response.data)
 		}).catch((error) => {
 			console.error(error)
 		})
 		console.log(stateUS)
 		console.log(options)
-	}, [stateUS, startDate, endDate]);
+	}, [stateUS]);
 	
 	return (
 		<div className="page-container">
@@ -93,9 +100,15 @@ const Query3 = () => {
 											})
 										}
 								</div>
+								<button className="add-curve-btn" onClick={addLineClicked}>
+												Add Line +
+								</button>
 						</div>
 						<DateInput header="Start Date" placeholder="YYYY/MM/DD" childToParent={getStartDate}/>
 						<DateInput header="End Date" placeholder="YYYY/MM/DD" childToParent={getEndDate}/>
+						<button onClick={PlotLines}>
+							Plot
+						</button>
 				</div>
 				<div className="lineplot">
 					<h1 className="text-heading">
@@ -104,8 +117,9 @@ const Query3 = () => {
 						<LineChart data = {data} xScale={scale.scaleTime} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
 							<CartesianGrid strokeDasharray="3 3"/>
 							<XAxis dataKey="ACC_DATE" numberOfTicks={6} />
+							{/* <YAxis></YAxis> */}
 							<YAxis
-								yAxisId="left-axis"
+								// yAxisId="left-axis"
 								orientation="left"
 								tickCount={1}
 								domain={[0, 1]}
@@ -113,7 +127,7 @@ const Query3 = () => {
 									<Label value='Severity' offset={2} angle="-90" />
 								</YAxis>
 							<YAxis
-								yAxisId="right-axis"
+								// yAxisId="right-axis"
 								orientation="right"
 								tickCount={1}
 								tick
