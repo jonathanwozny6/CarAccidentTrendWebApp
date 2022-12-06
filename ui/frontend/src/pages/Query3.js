@@ -56,8 +56,8 @@ const Query3 = () => {
 
 	// function to add line when "Add Line" button is clicked
 	const addLineClicked = () => {
-			let oldStateUS = stateUS
-			setStateUS(oldStateUS.concat("Enter a State..."));
+			// let oldStateUS = stateUS
+			// setStateUS(oldStateUS.concat("Enter a State..."));
 	} 
 
 	const [data, setData] = React.useState(); //{D: "", NORM_AVG_SEV: "", NORM_AVG_VIS: ""}
@@ -100,7 +100,7 @@ const Query3 = () => {
 											})
 										}
 								</div>
-								<button className="add-curve-btn" onClick={addLineClicked}>
+								<button onClick={addLineClicked}>
 												Add Line +
 								</button>
 						</div>
@@ -119,7 +119,7 @@ const Query3 = () => {
 							<XAxis dataKey="ACC_DATE" numberOfTicks={6} />
 							{/* <YAxis></YAxis> */}
 							<YAxis
-								// yAxisId="left-axis"
+								yAxisId="left-axis"
 								orientation="left"
 								tickCount={1}
 								domain={[0, 1]}
@@ -127,7 +127,7 @@ const Query3 = () => {
 									<Label value='Severity' offset={2} angle="-90" />
 								</YAxis>
 							<YAxis
-								// yAxisId="right-axis"
+								yAxisId="right-axis"
 								orientation="right"
 								tickCount={1}
 								tick
@@ -138,11 +138,13 @@ const Query3 = () => {
 							<Legend />
 							<Tooltip />
 							<Line
+								yAxisId="left-axis"
 								name="Average Severity"
 								dataKey="NORM_AVG_SEV"
 								stroke="black" activeDot={{ r: 8 }}
 								/>
 							<Line
+								yAxisId="right-axis"
 								name="Average Visibilty"
 								dataKey="NORM_AVG_VIS"
 								stroke="blue" activeDot={{ r: 8 }}
