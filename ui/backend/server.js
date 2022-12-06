@@ -161,14 +161,7 @@ app.get('/dates', (req, res) => {
     // read in parameter specified in api call
     const d1 = req.query.sDate
     const d2 = req.query.eDate
-
-    console.log("sdate", req.query.sDate)
-    console.log("edate", req.query.sDate)
-
-    console.log("d1", d1)
-    console.log("d2", d2)
     
-
     // read in the sql query
     // const sqlQuery = fs.readFileSync('./queries/Query1.txt').toString();
     sqlQuery = `SELECT UNIQUE TRUNC(DATE_TIME) AS ACC_DATE 
@@ -179,8 +172,6 @@ app.get('/dates', (req, res) => {
                     and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
                     
                 ORDER BY ACC_DATE ASC`
-
-    console.log(sqlQuery)
 
     fetchData(sqlQuery).then(dbRes => {
         for (let i = 0; i < dbRes.rows.length; i++) {
@@ -294,7 +285,7 @@ app.get('/query3/:state', (req, res) => {
 
                 where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
                 and env_id = fk_env_id and state = '${st}' 
-                and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
+                and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD')
                 and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
 
                 GROUP BY TRUNC(Date_Time)
@@ -312,36 +303,34 @@ app.get('/query3/:state', (req, res) => {
     })       
 })
 
-app.get('/query4', (req, res) => {
+app.get('/query4/:state', (req, res) => {
 
-    const st = req.query.state
-    // const d1 = req.query.date1
-    // const d2 = req.query.date2
-    // var yr = PARSE D1 AND GET THE YEAR 
+    const st = req.params.state
+    const hr_grp = req.query.hr_grp
+    const sev = req.query.sev
+    
+    const d1 = req.query.sDate
+    const d2 = req.query.eDate
 
-    // OR -> SHOULD JUST DO THIS INSTEAD AND GET THE YEAR
+    sqlQuery = `SELECT FLOOR(EXTRACT(HOUR FROM Date_Time)/${hr_grp}) as TIME_BIN,
+                        count(*) AS cnt
+                        
+                    FROM Accident, Road, Location
 
-    // const yr = req.query.year
+                    where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
+                    and Date_Time >= TO_DATE('${d1}', 'YYYY/MM/DD') 
+                    and Date_Time < TO_DATE('${d2}', 'YYYY/MM/DD')
+                    and state = '${st}'
+                    and severity = ${sev}
 
-    sqlQuery = `SELECT TRUNC(Date_Time) as acc_date, 
-                       count(*) AS cnt
-                    
-                FROM Accident, Road, Location
+                    GROUP BY FLOOR(EXTRACT(HOUR FROM Date_Time)/${hr_grp})
 
-                where fk_street = street and fk_zip_code = zip_code and fk_id_st = id_st 
-                and Date_Time >= TO_DATE('2017/01/01', 'YYYY/MM/DD') 
-                and Date_Time < TO_DATE('2018/01/01', 'YYYY/MM/DD')
-                and state = '${st}' 
-
-                GROUP BY TRUNC(Date_Time)
-
-                ORDER BY acc_date ASC;
-`
+                    ORDER BY TIME_BIN`
             
     fetchData(sqlQuery).then(dbRes => {
-        for (let i = 0; i < dbRes.rows.length; i++) {
-            dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
-        }
+        // for (let i = 0; i < dbRes.rows.length; i++) {
+        //     dbRes.rows[i]["ACC_DATE"] = moment(dbRes.rows[i]["ACC_DATE"]).format('YYYY-MM-DD');
+        // }
         res.send(dbRes.rows);
     })
     .catch(err => {

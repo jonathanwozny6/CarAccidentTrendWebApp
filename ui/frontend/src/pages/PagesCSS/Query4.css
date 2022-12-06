@@ -74,10 +74,17 @@
   height: auto;
 }
 
-.hour-granularity-radio-container {
+.hour-granularity-radio{
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
+.hour-granularity-input-container {
   display: flex;
   flex-direction: row;
+  justify-content: space-evenly;
 }
+
 
 .hour-granularity-radio {
   display: flex;
@@ -85,10 +92,12 @@
   justify-content: space-between;
 }
 
-.hour-granularity-radio-container::before {
-  content: "";
+.hour-granularity-radio input {
+  width: 16px;
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
-
-.hour-granularity-radio-container::after {
-  content: "";
+.hour-granularity-radio p {
+  margin-top: 0px;
+  margin-bottom: 0px;
 }
