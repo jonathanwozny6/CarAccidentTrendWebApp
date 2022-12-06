@@ -202,9 +202,8 @@ const Query5 = () => {
               <ResponsiveContainer width="100%" aspect={2} >
                 <LineChart data = {data} xScale={scale.scaleTime} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
                   <CartesianGrid strokeDasharray="3 3"/>
-                  <XAxis dataKey="ACC_DATE" numberOfTicks={6} />
+                  <XAxis dataKey="ACC_DATE" Label='Time'/>
                   <YAxis
-											yAxisId="left-axis"
 											orientation="left"
 											>
 											<Label value='Frequency' offset={2} angle="-90" />
@@ -212,7 +211,6 @@ const Query5 = () => {
                   <Legend />
                   <Tooltip />
 					<Line
-						 
 						dataKey="Clear"
 						stroke={"#1f77b4"} 
 						activeDot={{ r: 8 }}

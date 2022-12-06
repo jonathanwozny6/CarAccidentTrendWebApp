@@ -209,7 +209,9 @@ const Query1 = () => {
                     <ResponsiveContainer width="100%" aspect={2} >
                         <LineChart data = {data} xScale={scale.scaleTime} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
                             <CartesianGrid strokeDasharray="3 3"/>
-                            <XAxis dataKey="ACC_DATE" numberOfTicks={6} name='Time' />
+                            <XAxis dataKey="ACC_DATE" numberOfTicks={6} name='Time'>
+									<Label value='Time' offset={2}/>
+                            </XAxis>
                             <YAxis
 								yAxisId="left-axis"
 								orientation="left"

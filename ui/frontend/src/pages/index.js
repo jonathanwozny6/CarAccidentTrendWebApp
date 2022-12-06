@@ -11,29 +11,33 @@ const Home = () => {
 	const [tupleCount, setTupleCount] = useState([0,0,0,0,0]);
 
 	
-	const [path, setPath] = useState(["","","","",""]);
+	const [path, setPath] = useState(["accCounts","locCounts","envCounts","roadCounts","allCounts"]);
 
 	const [btnClickCnt, setBtnClickCnt] = useState(0);
 
 	const showTuples = () => {
-		btnClickCnt = btnClickCnt + 1;
+		console.log('btnClickCnt')
+		console.log(btnClickCnt)
+		setBtnClickCnt(btnClickCnt + 1);
 	}
 
 	useEffect(() => {
-		const optionsDates = {
-			method: 'GET',
-			//url: `http://localhost:8080/${[accCounts, locCounts, envCounts, roadCounts]}`, 
-			params: {},
-		}
-
-		axios.request(optionsDates).then((response) => {
-			if (response.status===200) {
-				const fetchedData = response.data;
-				setTupleCount(fetchedData);
+		for(let i = 0; i < 5; i++) {
+			const optionsDates = {
+				method: 'GET',
+				url: `http://localhost:8080/${path[i]}`,
 			}
-		}).catch((error) => {
-			console.error(error)
-		})
+	
+			axios.request(optionsDates).then((response) => {
+				if (response.status===200) {
+					const fetchedData = response.data;
+					console.log(fetchedData)
+					setTupleCount(fetchedData);
+				}
+			}).catch((error) => {
+				console.error(error)
+			})
+		}
 
 	}, [btnClickCnt])
 return (
