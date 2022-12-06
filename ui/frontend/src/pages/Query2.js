@@ -1,7 +1,6 @@
 import React from 'react';
 import {useState, useEffect} from 'react';
 import SearchBar from '../components/SearchBar';
-import SimpleDropdown from '../components/SimpleDropdown'
 import DateInput from '../components/DateInput'
 import dataStates from "../ParamData/States.json"
 import "./PagesCSS/Query2.css"
