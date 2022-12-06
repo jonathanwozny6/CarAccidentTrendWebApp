@@ -1,5 +1,14 @@
 .page-container{
   display: flex;
+  flex-direction: column;
+}
+
+.page-container h1 {
+  margin: auto;
+}
+
+.display-container{
+  display: flex;
   flex-direction: row;
 }
 
@@ -38,4 +47,28 @@
   margin-left: 40px;
 }
 
+.section>h3{ 
+  margin-top: 15px;
+  margin-bottom: 0px;
+  text-align: center;
+}
 
+.radio-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.radio {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.radio-container::before {
+  content: "";
+}
+
+.radio-container::after {
+  content: "";
+}
