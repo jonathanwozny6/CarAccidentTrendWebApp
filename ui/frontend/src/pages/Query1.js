@@ -210,10 +210,10 @@ const Query1 = () => {
                         <LineChart data = {data} xScale={scale.scaleTime} options={{ maintainAspectRatio: false }} margin={{ right: 300 }}>
                             <CartesianGrid strokeDasharray="3 3"/>
                             <XAxis dataKey="ACC_DATE" numberOfTicks={6} name='Time'>
-									<Label value='Time' offset={2}/>
+									<Label offset={2}/>
                             </XAxis>
                             <YAxis
-								yAxisId="left-axis"
+								// yAxisId="left-axis"
 								orientation="left"
 								>
 									<Label value='Frequency' offset={2} angle="-90" />

@@ -204,7 +204,7 @@ const Query5 = () => {
                   <CartesianGrid strokeDasharray="3 3"/>
                   <XAxis dataKey="ACC_DATE" Label='Time'/>
                   <YAxis
-											orientation="left"
+											// orientation="left"
 											>
 											<Label value='Frequency' offset={2} angle="-90" />
 										</YAxis>

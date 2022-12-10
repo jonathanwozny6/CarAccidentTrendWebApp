@@ -260,8 +260,8 @@ const Query4 = () => {
 											<Label value='Time' offset={2}/>
 										</XAxis>
 										<YAxis
-											yAxisId="left-axis"
-											orientation="left"
+											// yAxisId="left-axis"
+											// orientation="left"
 											>
 											<Label value='Frequency' offset={2} angle="-90" />
 										</YAxis>

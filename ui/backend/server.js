@@ -62,7 +62,7 @@ app.get('/locations', (req, res) => {
     sqlQuery = "SELECT * FROM LOCATION where STATE = 'AZ'"
 
     fetchData(sqlQuery).then(dbRes => {
-        res.send(dbRes);
+        res.send(dbRes.rows);
     })
     .catch(err => {
         res.send(err);
@@ -74,7 +74,7 @@ app.get('/accCounts', (req,res) => {
     sqlQuery = "SELECT COUNT(*) FROM ACCIDENT"
 
     fetchData(sqlQuery).then(dbRes => {
-        res.send(dbRes);
+        res.send(dbRes.rows);
     })
     .catch(err => {
         res.send(err);
@@ -86,7 +86,7 @@ app.get('/locCounts', (req,res) => {
     sqlQuery = "SELECT COUNT(*) FROM LOCATION"
 
     fetchData(sqlQuery).then(dbRes => {
-        res.send(dbRes);
+        res.send(dbRes.rows);
     })
     .catch(err => {
         res.send(err);
@@ -98,7 +98,7 @@ app.get('/airportCounts', (req,res) => {
     sqlQuery = "SELECT COUNT(*) FROM AIRPORTS"
 
     fetchData(sqlQuery).then(dbRes => {
-        res.send(dbRes);
+        res.send(dbRes.rows);
     })
     .catch(err => {
         res.send(err);
@@ -110,7 +110,7 @@ app.get('/roadCounts', (req,res) => {
     sqlQuery = "SELECT COUNT(*) FROM ROAD"
 
     fetchData(sqlQuery).then(dbRes => {
-        res.send(dbRes);
+        res.send(dbRes.rows);
     })
     .catch(err => {
         res.send(err);
@@ -122,7 +122,7 @@ app.get('/envCounts', (req,res) => {
     sqlQuery = "SELECT COUNT(*) FROM ENVIRONMENT"
 
     fetchData(sqlQuery).then(dbRes => {
-        res.send(dbRes);
+        res.send(dbRes.rows);
     })
     .catch(err => {
         res.send(err);
@@ -140,7 +140,7 @@ app.get('/allCounts', (req,res) => {
 `
 
     fetchData(sqlQuery).then(dbRes => {
-        res.send(dbRes);
+        res.send(dbRes.rows);
     })
     .catch(err => {
         res.send(err);
@@ -337,6 +337,8 @@ app.get('/query4/:state', (req, res) => {
                     GROUP BY FLOOR(EXTRACT(HOUR FROM Date_Time)/${hr_grp})
 
                     ORDER BY TIME_BIN`
+
+                    console.log(sqlQuery)
             
     fetchData(sqlQuery).then(dbRes => {
         // for (let i = 0; i < dbRes.rows.length; i++) {

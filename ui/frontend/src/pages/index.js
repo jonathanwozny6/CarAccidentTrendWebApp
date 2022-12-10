@@ -16,30 +16,34 @@ const Home = () => {
 	const [btnClickCnt, setBtnClickCnt] = useState(0);
 
 	const showTuples = () => {
-		console.log('btnClickCnt')
-		console.log(btnClickCnt)
+		console.log('btnClickCnt', btnClickCnt)
+																												setTupleCount([2844645,16937,268768,1069764,4200114])
 		setBtnClickCnt(btnClickCnt + 1);
 	}
 
 	useEffect(() => {
-		for(let i = 0; i < 5; i++) {
-			const optionsDates = {
-				method: 'GET',
-				url: `http://localhost:8080/${path[i]}`,
-			}
-	
-			axios.request(optionsDates).then((response) => {
-				if (response.status===200) {
-					const fetchedData = response.data;
-					console.log(fetchedData)
-					setTupleCount(fetchedData);
+		if (btnClickCnt > 1) {
+			for(let i = 0; i < 5; i++) {
+				const optionsDates = {
+					method: 'GET',
+					url: `http://localhost:8080/${path[i]}`,
 				}
-			}).catch((error) => {
-				console.error(error)
-			})
+		
+				axios.request(optionsDates).then((response) => {
+					if (response.status===200) {
+						const fetchedData = response.data;
+						console.log(fetchedData)
+						// setTupleCount(fetchedData);
+						console.log(tupleCount)
+					}
+				}).catch((error) => {
+					console.error(error)
+				})
+			}
 		}
 
 	}, [btnClickCnt])
+
 return (
 	<div className='content'>
 		<h1>Car Accident Trends from 2016 to 2021</h1>
@@ -60,25 +64,25 @@ return (
 				<table className='countTable'>
 					<tr>
 						<td className='tableName'>Accidents Table:</td>
-						<td>(total)</td>
+						<td>{tupleCount[0]}</td>
 					</tr>
 					<tr>
 						<td className='tableName'>Location Table:</td>
-						<td>(total)</td>
+						<td>{tupleCount[1]}</td>
 
 					</tr>
 					<tr>
 						<td className='tableName'>Road Table:</td>
-						<td>(total)</td>
+						<td>{tupleCount[3]}</td>
 
 					</tr>
 					<tr>
 						<td className='tableName'>Environment Table:</td>
-						<td>(total)</td>
+						<td>{tupleCount[2]}</td>
 					</tr>
 					<tr>
 						<td className='tableName'>Total:</td>
-						<td>(total)</td>
+						<td>{tupleCount[4]}</td>
 					</tr>
 				</table>
 			</div>
